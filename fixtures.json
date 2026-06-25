@@ -808,7 +808,7 @@
       "hostCity": "mexico-city",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/czechia-vs-mexico-2026-06-24",
       "homeScore": 0,
-      "awayScore": 0,
+      "awayScore": 2,
       "status": "live"
     },
     {
@@ -822,7 +822,7 @@
       "stadium": "Estadio BBVA",
       "hostCity": "monterrey",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/south-africa-vs-korea-republic-2026-06-24",
-      "homeScore": 0,
+      "homeScore": 1,
       "awayScore": 0,
       "status": "live"
     },
