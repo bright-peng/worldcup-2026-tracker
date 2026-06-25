@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 FIFA 世界杯比分抓取与模拟器</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部区域 -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="trophy"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>WORLD CUP 2026</h1>
+                    <span class="sub-title">比分抓取与对阵模拟中心</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="api-status-badge" id="api-status-display">
+                    <span class="status-indicator yellow"></span>
+                    <span class="status-text">未激活 API Key</span>
+                </div>
+                
+                <button class="btn btn-secondary" id="btn-open-api-config" title="配置 API-Key">
+                    <i data-lucide="settings"></i>
+                    <span>API 配置</span>
+                </button>
+                
+                <button class="btn btn-primary" id="btn-fetch-data" title="从 API 抓取最新比分">
+                    <i data-lucide="refresh-cw" class="icon-spin-hover"></i>
+                    <span>抓取比分</span>
+                </button>
+
+                <div class="dropdown">
+                    <button class="btn btn-success dropdown-toggle" id="btn-export-menu">
+                        <i data-lucide="download"></i>
+                        <span>导出数据</span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#" id="export-csv"><i data-lucide="file-spreadsheet"></i> 导出 CSV</a>
+                        <a href="#" id="export-json"><i data-lucide="file-json"></i> 导出 JSON</a>
+                        <hr>
+                        <a href="#" id="btn-reset-data" class="text-danger"><i data-lucide="trash-2"></i> 重置数据</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab 切换导航 -->
+        <nav class="app-nav">
+            <button class="nav-tab active" data-tab="matches">
+                <i data-lucide="calendar"></i>
+                <span>比赛日程 (Match 1-104)</span>
+            </button>
+            <button class="nav-tab" data-tab="standings">
+                <i data-lucide="list-ordered"></i>
+                <span>小组积分榜</span>
+            </button>
+            <button class="nav-tab" data-tab="bracket">
+                <i data-lucide="git-merge"></i>
+                <span>淘汰赛对战图</span>
+            </button>
+        </nav>
+
+        <!-- 主要展示区域 -->
+        <main class="app-main">
+            <!-- 比赛列表 Tab -->
+            <section class="tab-content active" id="tab-matches">
+                <!-- 筛选与搜索工具栏 -->
+                <div class="toolbar glass-panel">
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="match-search" placeholder="搜索国家队名称（例如：Mexico）...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-item">
+                            <label for="filter-stage">赛事阶段</label>
+                            <select id="filter-stage">
+                                <option value="all">全部阶段</option>
+                                <option value="group-stage">小组赛 (M1 - M72)</option>
+                                <option value="knockout">全部淘汰赛</option>
+                                <option value="round-of-32">32 强淘汰赛 (M73 - M88)</option>
+                                <option value="round-of-16">16 强淘汰赛 (M89 - M96)</option>
+                                <option value="quarter-finals">1/4 决赛 (M97 - M100)</option>
+                                <option value="semi-finals">半决赛 (M101 - M102)</option>
+                                <option value="third-place">三四名决赛 (M103)</option>
+                                <option value="final">决赛 (M104)</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-item">
+                            <label for="filter-group">小组</label>
+                            <select id="filter-group">
+                                <option value="all">所有小组</option>
+                                <option value="A">A 组</option>
+                                <option value="B">B 组</option>
+                                <option value="C">C 组</option>
+                                <option value="D">D 组</option>
+                                <option value="E">E 组</option>
+                                <option value="F">F 组</option>
+                                <option value="G">G 组</option>
+                                <option value="H">H 组</option>
+                                <option value="I">I 组</option>
+                                <option value="J">J 组</option>
+                                <option value="K">K 组</option>
+                                <option value="L">L 组</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-item">
+                            <label for="filter-status">比赛状态</label>
+                            <select id="filter-status">
+                                <option value="all">全部状态</option>
+                                <option value="scheduled">未开始</option>
+                                <option value="live">进行中</option>
+                                <option value="finished">已结束</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 比赛列表卡片容器 -->
+                <div class="matches-list" id="matches-list-container">
+                    <!-- JS 动态填入 -->
+                    <div class="loading-placeholder">
+                        <div class="spinner"></div>
+                        <p>正在努力加载赛程中，请稍候...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 小组积分榜 Tab -->
+            <section class="tab-content" id="tab-standings">
+                <div class="standings-grid" id="standings-grid-container">
+                    <!-- JS 动态计算填入 12 个小组的表格 -->
+                </div>
+            </section>
+
+            <!-- 淘汰赛对战图 Tab -->
+            <section class="tab-content" id="tab-bracket">
+                <div class="bracket-wrapper">
+                    <div class="bracket-container" id="bracket-container">
+                        <!-- JS 动态计算树状图 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="app-footer">
+            <p>© 2026 FIFA World Cup Match Hub. Powered by Advanced Coding Agent.</p>
+        </footer>
+    </div>
+
+    <!-- API 配置弹窗 (Modal) -->
+    <dialog id="api-config-dialog" class="glass-dialog">
+        <div class="dialog-header">
+            <h3><i data-lucide="settings"></i> API 抓取配置</h3>
+            <button class="dialog-close" id="btn-close-api-dialog">&times;</button>
+        </div>
+        <div class="dialog-body">
+            <p class="dialog-desc">本系统支持通过三个公开/免费的 API 数据源同步世界杯比赛比分数据。若 API 存在跨域限制，系统将自动通过公共 CORS 代理进行转发。</p>
+            
+            <form id="api-config-form">
+                <!-- 数据源 1: GitHub / OpenFootball -->
+                <div class="form-group">
+                    <div class="form-label-with-badge">
+                        <label>数据源 1: GitHub OpenFootball 镜像 (免费)</label>
+                        <span class="badge badge-free">免 Key 直接使用</span>
+                    </div>
+                    <div class="input-desc">提供快速、无限制的赛程初始化与比分镜像数据。</div>
+                    <input type="text" value="https://raw.githubusercontent.com/openfootball/worldcup.json/master" readonly class="input-readonly">
+                </div>
+
+                <hr class="dialog-divider">
+
+                <!-- 数据源 2: Football-Data.org -->
+                <div class="form-group">
+                    <div class="form-label-with-badge">
+                        <label for="api-key-football-data">数据源 2: Football-Data.org API</label>
+                        <span class="badge badge-key">需要 API Token</span>
+                    </div>
+                    <div class="input-desc">需要在官网注册获取 API 令牌。每日有限制请求次数。</div>
+                    <input type="password" id="api-key-football-data" placeholder="输入 X-Auth-Token...">
+                </div>
+
+                <hr class="dialog-divider">
+
+                <!-- 数据源 3: API-Football (RapidAPI) -->
+                <div class="form-group">
+                    <div class="form-label-with-badge">
+                        <label for="api-key-rapidapi">数据源 3: API-Football (RapidAPI)</label>
+                        <span class="badge badge-key">需要 RapidAPI Key</span>
+                    </div>
+                    <div class="input-desc">最全面的足球数据 API。请填入您的 RapidAPI 访问密钥。</div>
+                    <input type="password" id="api-key-rapidapi" placeholder="输入 x-rapidapi-key...">
+                </div>
+
+                <div class="dialog-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-api">取消</button>
+                    <button type="submit" class="btn btn-primary">保存配置</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 比分编辑/模拟弹窗 (Modal) -->
+    <dialog id="edit-score-dialog" class="glass-dialog">
+        <div class="dialog-header">
+            <h3><i data-lucide="edit-3"></i> 录入/模拟比赛结果</h3>
+            <button class="dialog-close" id="btn-close-edit-dialog">&times;</button>
+        </div>
+        <div class="dialog-body">
+            <div class="match-edit-preview">
+                <span class="match-badge" id="edit-match-number">Match --</span>
+                <span class="match-badge stage" id="edit-match-stage">Group stage</span>
+            </div>
+
+            <form id="edit-score-form">
+                <input type="hidden" id="edit-match-id">
+                
+                <div class="teams-score-inputs">
+                    <!-- 主队 -->
+                    <div class="team-input-card">
+                        <img id="edit-home-flag" class="edit-flag" src="https://flagcdn.com/w80/un.png" alt="Flag">
+                        <span class="team-name" id="edit-home-name">主队</span>
+                        <input type="number" id="edit-home-score" min="0" placeholder="0" required>
+                    </div>
+
+                    <div class="score-vs">VS</div>
+
+                    <!-- 客队 -->
+                    <div class="team-input-card">
+                        <img id="edit-away-flag" class="edit-flag" src="https://flagcdn.com/w80/un.png" alt="Flag">
+                        <span class="team-name" id="edit-away-name">客队</span>
+                        <input type="number" id="edit-away-score" min="0" placeholder="0" required>
+                    </div>
+                </div>
+
+                <!-- 点球大战配置（仅在淘汰赛中显示） -->
+                <div class="penalty-section" id="edit-penalty-section" style="display: none;">
+                    <h4><i data-lucide="help-circle"></i> 是否通过点球大战决出胜负？</h4>
+                    <div class="penalty-switch">
+                        <input type="checkbox" id="edit-has-penalties">
+                        <label for="edit-has-penalties">开启点球大战比分</label>
+                    </div>
+                    <div class="penalty-inputs" id="edit-penalty-inputs-row" style="display: none;">
+                        <div class="penalty-input-group">
+                            <label>主队点球</label>
+                            <input type="number" id="edit-home-penalties" min="0" placeholder="0">
+                        </div>
+                        <div class="penalty-input-group">
+                            <label>客队点球</label>
+                            <input type="number" id="edit-away-penalties" min="0" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="edit-match-status">比赛状态</label>
+                    <select id="edit-match-status">
+                        <option value="scheduled">未开始</option>
+                        <option value="live">进行中</option>
+                        <option value="finished">已结束</option>
+                    </select>
+                </div>
+
+                <div class="dialog-actions mt-4">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-edit">取消</button>
+                    <button type="submit" class="btn btn-success">确认保存</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 弹窗通知 -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

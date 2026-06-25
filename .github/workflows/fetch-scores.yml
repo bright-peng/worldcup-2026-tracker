@@ -1,0 +1,47 @@
+name: 🏆 自动抓取并更新世界杯比分
+
+on:
+  schedule:
+    # 每 10 分钟运行一次 (GitHub Actions Cron 定时任务)
+    - cron: '*/10 * * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 允许在 GitHub 控制台手动点击触发
+
+jobs:
+  update-scores:
+    runs-on: ubuntu-latest
+    permissions:
+      # 赋予 Action 写入权限，以便能够 commit & push 修改回 main 分支
+      contents: write
+
+    steps:
+      - name: 📂 检出代码库
+        uses: actions/checkout@v4
+
+      - name: 🐍 配置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 🏆 运行比分同步脚本
+        env:
+          FOOTBALL_DATA_API_TOKEN: ${{ secrets.FOOTBALL_DATA_API_TOKEN }}
+          RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
+        run: |
+          python scripts/fetch_scores.py
+
+      - name: 📝 检测数据变动并推送提交
+        run: |
+          # 检查 fixtures.json 文件是否被修改
+          if git diff --exit-code fixtures.json; then
+            echo "✓ 比分未发生改变，无需更新。"
+          else
+            echo "⚡ 检测到新的比分结果，正在推送到 GitHub 分支..."
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add fixtures.json
+            git commit -m "chore: 🏆 自动同步最新世界杯比分赛况 [skip ci]"
+            git push
+          fi
