@@ -836,7 +836,10 @@
       "awayTeam": "Cote d'Ivoire",
       "stadium": "Lincoln Financial Field",
       "hostCity": "philadelphia",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/curacao-vs-cote-divoire-2026-06-25"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/curacao-vs-cote-divoire-2026-06-25",
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "live"
     },
     {
       "matchNumber": 56,
@@ -848,7 +851,10 @@
       "awayTeam": "Germany",
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/ecuador-vs-germany-2026-06-25"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/ecuador-vs-germany-2026-06-25",
+      "homeScore": 1,
+      "awayScore": 1,
+      "status": "live"
     },
     {
       "matchNumber": 57,
