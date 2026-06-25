@@ -838,8 +838,8 @@
       "hostCity": "philadelphia",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/curacao-vs-cote-divoire-2026-06-25",
       "homeScore": 0,
-      "awayScore": 1,
-      "status": "live"
+      "awayScore": 2,
+      "status": "finished"
     },
     {
       "matchNumber": 56,
@@ -852,9 +852,9 @@
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/ecuador-vs-germany-2026-06-25",
-      "homeScore": 1,
+      "homeScore": 2,
       "awayScore": 1,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 57,
