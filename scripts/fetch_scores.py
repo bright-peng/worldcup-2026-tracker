@@ -44,6 +44,53 @@ def main():
     
     print("🏆 启动多源比分比对与增量滑动窗口更新引擎...")
     
+    # --------------------------------------------------------------------------
+    # 载入本地赛程文件（方案 B 提取前置判断）
+    # --------------------------------------------------------------------------
+    fixtures_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'fixtures.json')
+    try:
+        with open(fixtures_path, 'r', encoding='utf-8') as f:
+            local_data = json.load(f)
+    except Exception as e:
+        print(f"❌ 读取 fixtures.json 失败: {e}")
+        sys.exit(1)
+
+    now_utc = datetime.now(timezone.utc)
+    print(f"⏰ 当前 UTC 时间: {now_utc.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    # --------------------------------------------------------------------------
+    # 方案 B：看门狗逻辑 (判断当前是否真的有比赛在进行或临近)
+    # --------------------------------------------------------------------------
+    has_active_match = False
+    for match in local_data['fixtures']:
+        # 我们仅针对小组赛（即需要增量抓取和投票的对象）进行判定
+        if match['stage'] != 'group-stage':
+            continue
+        # 如果本场已经结束，不用为此开启活跃状态
+        if match.get('status') == 'finished':
+            continue
+            
+        kickoff_utc_str = match['kickoffUtc']
+        try:
+            kickoff_dt = datetime.strptime(kickoff_utc_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        except Exception:
+            try:
+                kickoff_dt = datetime.strptime(kickoff_utc_str, "%Y-%m-%dT%H:%M:%S%z")
+            except Exception:
+                continue
+
+        # 活跃刷新时区：开球前 15 分钟 到 开球后 4.5 小时内 (如果有暴雨中断，本地依然为 suspended/live，此判断依然成立)
+        if kickoff_dt - timedelta(minutes=15) <= now_utc <= kickoff_dt + timedelta(hours=4, minutes=30):
+            has_active_match = True
+            print(f"📡 监测到活跃比赛中: Match {match['matchNumber']} ({match['homeTeam']} vs {match['awayTeam']})")
+            break
+
+    # 如果检测到没有处于正在踢或临近开球的比赛，关闭收费/限流数据源的调用，只使用免 Key 数据源
+    if not has_active_match:
+        print("⏰ [方案 B 保护中] 当前无正在进行中或临近开球的比赛，自动跳过受限/收费数据源 (Football-Data & API-Football) 以节省额度。")
+        token = None
+        rapid_key = None
+
     # 存储各个源抓取到的比分汇总
     # 结构: { match_number: [ { 'home': X, 'away': Y, 'status': S, 'homePen': P1, 'awayPen': P2, 'source': Src } ] }
     match_votes = {}
@@ -123,7 +170,7 @@ def main():
             print("⚠️ 源 2 抓取数据为空。")
 
     # --------------------------------------------------------------------------
-    # 数据源 3: GitHub OpenFootball JSON (免 Key)
+    # 数据源 3: GitHub OpenFootball JSON (免 Key 方案 A 兜底)
     # --------------------------------------------------------------------------
     print("📡 源 3 [GitHub OpenFootball] 正在拉取...")
     gf_raw = fetch_url('https://api.allorigins.win/get?url=https%3A%2F%2Fraw.githubusercontent.com%2Fopenfootball%2Fworldcup.json%2Fmaster%2F2026%2Fworldcup.json')
@@ -151,23 +198,9 @@ def main():
         print("⚠️ 源 3 抓取数据为空。")
 
     # --------------------------------------------------------------------------
-    # 载入本地赛程文件
-    # --------------------------------------------------------------------------
-    fixtures_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'fixtures.json')
-    try:
-        with open(fixtures_path, 'r', encoding='utf-8') as f:
-            local_data = json.load(f)
-    except Exception as e:
-        print(f"❌ 读取 fixtures.json 失败: {e}")
-        sys.exit(1)
-
-    # --------------------------------------------------------------------------
     # 增量滑动窗口抓取控制与多源投票决策
     # --------------------------------------------------------------------------
-    now_utc = datetime.now(timezone.utc)
     updated_count = 0
-    
-    print(f"⏰ 当前 UTC 时间: {now_utc.strftime('%Y-%m-%d %H:%M:%S')}")
     
     # 遍历本地所有赛程，进行增量窗口判定
     for match in local_data['fixtures']:
