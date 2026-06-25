@@ -808,8 +808,8 @@
       "hostCity": "mexico-city",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/czechia-vs-mexico-2026-06-24",
       "homeScore": 0,
-      "awayScore": 2,
-      "status": "live"
+      "awayScore": 3,
+      "status": "finished"
     },
     {
       "matchNumber": 54,
@@ -824,7 +824,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/south-africa-vs-korea-republic-2026-06-24",
       "homeScore": 1,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 55,
