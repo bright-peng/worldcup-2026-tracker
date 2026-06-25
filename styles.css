@@ -402,9 +402,77 @@ body {
 
 /* 比赛卡片列表 */
 .matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.date-group-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;
+}
+
+.date-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: rgba(20, 35, 45, 0.4);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    margin-bottom: -12px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    backdrop-filter: var(--glass-blur);
+    scroll-margin-top: 140px; /* 保证平滑滚动定位后不被吸顶的 toolbar 遮挡 */
+}
+
+.date-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+.date-header-title i {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+}
+
+.date-header-title.is-today {
+    color: var(--secondary);
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.date-header-title.is-today i {
+    color: var(--secondary);
+}
+
+.today-badge {
+    background: var(--secondary);
+    color: #060a0d;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    animation: pulseToday 2s infinite;
+}
+
+@keyframes pulseToday {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4); }
+    70% { transform: scale(1.03); box-shadow: 0 0 0 6px rgba(0, 229, 255, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+}
+
+.date-header-count {
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 6px;
 }
 
 /* 比赛卡片 */

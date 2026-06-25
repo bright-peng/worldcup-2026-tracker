@@ -765,7 +765,8 @@ function renderMatchesList() {
     const groupVal = document.getElementById('filter-group').value;
     const statusVal = document.getElementById('filter-status').value;
     
-    let renderedCount = 0;
+    // 收集所有通过过滤筛选的比赛
+    const matchesToRender = [];
     
     for (let i = 1; i <= 104; i++) {
         const m = appState.matches[i];
@@ -795,80 +796,161 @@ function renderMatchesList() {
             continue;
         }
         
-        renderedCount++;
-        const card = document.createElement('div');
-        card.className = `match-card ${m.status}`;
-        card.setAttribute('data-match-number', m.matchNumber);
+        matchesToRender.push(m);
+    }
+    
+    // 按本地日期 YYYY-MM-DD 分组
+    const grouped = {};
+    matchesToRender.forEach(m => {
+        const dateObj = new Date(m.kickoffUtc);
+        const y = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        const dateKey = `${y}-${month}-${d}`;
         
-        const homeFlag = getFlagUrl(m.homeTeam);
-        const awayFlag = getFlagUrl(m.awayTeam);
+        if (!grouped[dateKey]) {
+            grouped[dateKey] = [];
+        }
+        grouped[dateKey].push(m);
+    });
+    
+    // 排序所有日期 Key
+    const sortedKeys = Object.keys(grouped).sort();
+    const renderedCount = matchesToRender.length;
+    
+    // 获取本地今天 YYYY-MM-DD
+    const getTodayLocalStr = () => {
+        const today = new Date();
+        const y = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const d = String(today.getDate()).padStart(2, '0');
+        return `${y}-${month}-${d}`;
+    };
+    const todayStr = getTodayLocalStr();
+    
+    // 渲染天级分组与卡片
+    sortedKeys.forEach(dateKey => {
+        const matchesInDay = grouped[dateKey];
+        const isToday = (dateKey === todayStr);
         
-        // 比分板的渲染
-        let scoreHtml = '';
-        if (m.status === 'scheduled') {
-            // 未开始，显示踢球时间（只显示时间，比如 22:00）
-            const timeStr = new Date(m.kickoffUtc).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
-            scoreHtml = `<div class="match-time-placeholder">${timeStr}</div>`;
-        } else {
-            // 进行中、已结束或因故中断
-            scoreHtml = `
-                <div class="score-display ${m.status === 'live' ? 'live' : ''} ${m.status === 'suspended' ? 'suspended' : ''}">
-                    <span>${m.homeScore}</span>
-                    <span class="score-sep">-</span>
-                    <span>${m.awayScore}</span>
-                </div>
-            `;
-            if (m.status === 'suspended') {
-                scoreHtml += `
-                    <div class="penalty-badge suspended-badge" style="color: var(--warning); border-color: rgba(255, 215, 0, 0.3); background: rgba(255, 215, 0, 0.05); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; border: 1px solid;">
-                        <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
-                        比赛因故中断
+        // 获取本地化日期字符串展示 (如 "06-15 星期一")
+        const firstMatchDate = new Date(matchesInDay[0].kickoffUtc);
+        const dateDisplay = firstMatchDate.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'long' });
+        
+        // 创建日期头部 Header
+        const dateHeader = document.createElement('div');
+        dateHeader.className = 'date-group-header';
+        dateHeader.setAttribute('data-date', dateKey);
+        dateHeader.innerHTML = `
+            <div class="date-header-title ${isToday ? 'is-today' : ''}">
+                <i data-lucide="calendar"></i>
+                <span>${dateDisplay}</span>
+                ${isToday ? '<span class="today-badge">今天</span>' : ''}
+            </div>
+            <span class="date-header-count">${matchesInDay.length} 场比赛</span>
+        `;
+        container.appendChild(dateHeader);
+        
+        // 创建卡片网格
+        const grid = document.createElement('div');
+        grid.className = 'date-group-grid';
+        container.appendChild(grid);
+        
+        // 渲染这一天的所有卡片并添加到网格中
+        matchesInDay.forEach(m => {
+            const card = document.createElement('div');
+            card.className = `match-card ${m.status}`;
+            card.setAttribute('data-match-number', m.matchNumber);
+            
+            const homeFlag = getFlagUrl(m.homeTeam);
+            const awayFlag = getFlagUrl(m.awayTeam);
+            
+            // 比分板的渲染
+            let scoreHtml = '';
+            if (m.status === 'scheduled') {
+                const timeStr = new Date(m.kickoffUtc).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+                scoreHtml = `<div class="match-time-placeholder">${timeStr}</div>`;
+            } else {
+                scoreHtml = `
+                    <div class="score-display ${m.status === 'live' ? 'live' : ''} ${m.status === 'suspended' ? 'suspended' : ''}">
+                        <span>${m.homeScore}</span>
+                        <span class="score-sep">-</span>
+                        <span>${m.awayScore}</span>
                     </div>
                 `;
+                if (m.status === 'suspended') {
+                    scoreHtml += `
+                        <div class="penalty-badge suspended-badge" style="color: var(--warning); border-color: rgba(255, 215, 0, 0.3); background: rgba(255, 215, 0, 0.05); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; border: 1px solid;">
+                            <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
+                            比赛因故中断
+                        </div>
+                    `;
+                }
+                if (m.homePenalties !== null && m.awayPenalties !== null) {
+                    scoreHtml += `<div class="penalty-badge">点球 ${m.homePenalties}:${m.awayPenalties}</div>`;
+                }
             }
-            if (m.homePenalties !== null && m.awayPenalties !== null) {
-                scoreHtml += `<div class="penalty-badge">点球 ${m.homePenalties}:${m.awayPenalties}</div>`;
-            }
+            
+            card.innerHTML = `
+                <div class="match-card-header">
+                    <span class="match-number-badge">Match ${m.matchNumber}</span>
+                    <span class="match-stage-label">${m.stage === 'group-stage' ? '小组赛 ' + m.group + '组' : translateStage(m.stage)}</span>
+                </div>
+                <div class="match-card-body">
+                    <div class="team-display home">
+                        <div class="flag-wrapper">
+                            <img class="team-flag" src="${homeFlag}" alt="${m.homeTeam}">
+                        </div>
+                        <span class="team-name" title="${getTeamSimpleName(m.homeTeam)}">${getTeamDisplayName(m.homeTeam)}</span>
+                    </div>
+                    
+                    <div class="score-board">
+                        ${scoreHtml}
+                    </div>
+                    
+                    <div class="team-display away">
+                        <div class="flag-wrapper">
+                            <img class="team-flag" src="${awayFlag}" alt="${m.awayTeam}">
+                        </div>
+                        <span class="team-name" title="${getTeamSimpleName(m.awayTeam)}">${getTeamDisplayName(m.awayTeam)}</span>
+                    </div>
+                </div>
+                <div class="match-status-row">
+                    <span class="match-venue" title="${m.stadium}, ${m.hostCity}"><i data-lucide="map-pin"></i> ${m.stadium}</span>
+                    <button class="btn-edit-match" title="模拟/录入比分" onclick="openEditScoreDialog(${m.matchNumber})">
+                        <i data-lucide="edit-3"></i>
+                    </button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    });
+    
+    // 智能定位滚动：最先看到关注的比赛日
+    let targetDateKey = null;
+    if (grouped[todayStr]) {
+        // A. 如果今天有比赛，锁定今天
+        targetDateKey = todayStr;
+    } else {
+        // B. 否则锁定第一个未结束比赛的日期
+        const activeKey = sortedKeys.find(key => 
+            grouped[key].some(m => m.status !== 'finished')
+        );
+        if (activeKey) {
+            targetDateKey = activeKey;
+        } else if (sortedKeys.length > 0) {
+            // C. 若全部已结束，锁定赛程最后一天
+            targetDateKey = sortedKeys[sortedKeys.length - 1];
         }
-        
-        // 日期时间转化显示 (本地时区)
-        const dateObj = new Date(m.kickoffUtc);
-        const dateStr = dateObj.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'short' });
-        
-        card.innerHTML = `
-            <div class="match-card-header">
-                <span class="match-number-badge">Match ${m.matchNumber}</span>
-                <span class="match-stage-label">${m.stage === 'group-stage' ? '小组赛 ' + m.group + '组' : translateStage(m.stage)}</span>
-                <span>${dateStr}</span>
-            </div>
-            <div class="match-card-body">
-                <div class="team-display home">
-                    <div class="flag-wrapper">
-                        <img class="team-flag" src="${homeFlag}" alt="${m.homeTeam}">
-                    </div>
-                    <span class="team-name" title="${getTeamSimpleName(m.homeTeam)}">${getTeamDisplayName(m.homeTeam)}</span>
-                </div>
-                
-                <div class="score-board">
-                    ${scoreHtml}
-                </div>
-                
-                <div class="team-display away">
-                    <div class="flag-wrapper">
-                        <img class="team-flag" src="${awayFlag}" alt="${m.awayTeam}">
-                    </div>
-                    <span class="team-name" title="${getTeamSimpleName(m.awayTeam)}">${getTeamDisplayName(m.awayTeam)}</span>
-                </div>
-            </div>
-            <div class="match-status-row">
-                <span class="match-venue" title="${m.stadium}, ${m.hostCity}"><i data-lucide="map-pin"></i> ${m.stadium}</span>
-                <button class="btn-edit-match" title="模拟/录入比分" onclick="openEditScoreDialog(${m.matchNumber})">
-                    <i data-lucide="edit-3"></i>
-                </button>
-            </div>
-        `;
-        
-        container.appendChild(card);
+    }
+    
+    if (targetDateKey) {
+        const targetEl = container.querySelector(`.date-group-header[data-date="${targetDateKey}"]`);
+        if (targetEl) {
+            setTimeout(() => {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
     }
     
     if (renderedCount === 0) {
