@@ -1266,3 +1266,26 @@ dialog::backdrop {
         display: none;
     }
 }
+
+/* 国际足联三字码与占位符样式 */
+.fifa-code {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    margin-left: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    text-transform: uppercase;
+    display: inline-block;
+}
+.bracket-team-info .fifa-code {
+    font-size: 0.65rem;
+    padding: 0px 2px;
+}
+.placeholder-team {
+    font-style: italic;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+}

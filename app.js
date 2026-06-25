@@ -54,6 +54,119 @@ const countryToCode = {
     'Uzbekistan': 'uz'
 };
 
+// 统一国家队元数据（中文名与 FIFA 三字码）
+const teamMetadata = {
+    'Algeria': { code: 'dz', cn: '阿尔及利亚', fifa: 'ALG' },
+    'Argentina': { code: 'ar', cn: '阿根廷', fifa: 'ARG' },
+    'Australia': { code: 'au', cn: '澳大利亚', fifa: 'AUS' },
+    'Austria': { code: 'at', cn: '奥地利', fifa: 'AUT' },
+    'Belgium': { code: 'be', cn: '比利时', fifa: 'BEL' },
+    'Bosnia and Herzegovina': { code: 'ba', cn: '波黑', fifa: 'BIH' },
+    'Brazil': { code: 'br', cn: '巴西', fifa: 'BRA' },
+    'Cabo Verde': { code: 'cv', cn: '佛得角', fifa: 'CPV' },
+    'Canada': { code: 'ca', cn: '加拿大', fifa: 'CAN' },
+    'Colombia': { code: 'co', cn: '哥伦比亚', fifa: 'COL' },
+    'Congo DR': { code: 'cd', cn: '民主刚果', fifa: 'COD' },
+    "Cote d'Ivoire": { code: 'ci', cn: '科特迪瓦', fifa: 'CIV' },
+    'Croatia': { code: 'hr', cn: '克罗地亚', fifa: 'CRO' },
+    'Curacao': { code: 'cw', cn: '库拉索', fifa: 'CUW' },
+    'Czechia': { code: 'cz', cn: '捷克', fifa: 'CZE' },
+    'Ecuador': { code: 'ec', cn: '厄瓜多尔', fifa: 'ECU' },
+    'Egypt': { code: 'eg', cn: '埃及', fifa: 'EGY' },
+    'England': { code: 'gb-eng', cn: '英格兰', fifa: 'ENG' },
+    'France': { code: 'fr', cn: '法国', fifa: 'FRA' },
+    'Germany': { code: 'de', cn: '德国', fifa: 'GER' },
+    'Ghana': { code: 'gh', cn: '加纳', fifa: 'GHA' },
+    'Haiti': { code: 'ht', cn: '海地', fifa: 'HAI' },
+    'IR Iran': { code: 'ir', cn: '伊朗', fifa: 'IRN' },
+    'Iraq': { code: 'iq', cn: '伊拉克', fifa: 'IRQ' },
+    'Japan': { code: 'jp', cn: '日本', fifa: 'JPN' },
+    'Jordan': { code: 'jo', cn: '约旦', fifa: 'JOR' },
+    'Korea Republic': { code: 'kr', cn: '韩国', fifa: 'KOR' },
+    'Mexico': { code: 'mx', cn: '墨西哥', fifa: 'MEX' },
+    'Morocco': { code: 'ma', cn: '摩洛哥', fifa: 'MAR' },
+    'Netherlands': { code: 'nl', cn: '荷兰', fifa: 'NED' },
+    'New Zealand': { code: 'nz', cn: '新西兰', fifa: 'NZL' },
+    'Norway': { code: 'no', cn: '挪威', fifa: 'NOR' },
+    'Panama': { code: 'pa', cn: '巴拿马', fifa: 'PAN' },
+    'Paraguay': { code: 'py', cn: '巴拉圭', fifa: 'PAR' },
+    'Portugal': { code: 'pt', cn: '葡萄牙', fifa: 'POR' },
+    'Qatar': { code: 'qa', cn: '卡塔尔', fifa: 'QAT' },
+    'Saudi Arabia': { code: 'sa', cn: '沙特阿拉伯', fifa: 'KSA' },
+    'Scotland': { code: 'gb-sct', cn: '苏格兰', fifa: 'SCO' },
+    'Senegal': { code: 'sn', cn: '塞内加尔', fifa: 'SEN' },
+    'South Africa': { code: 'za', cn: '南非', fifa: 'RSA' },
+    'Spain': { code: 'es', cn: '西班牙', fifa: 'ESP' },
+    'Sweden': { code: 'se', cn: '瑞典', fifa: 'SWE' },
+    'Switzerland': { code: 'ch', cn: '瑞士', fifa: 'SUI' },
+    'Tunisia': { code: 'tn', cn: '突尼斯', fifa: 'TUN' },
+    'Turkiye': { code: 'tr', cn: '土耳其', fifa: 'TUR' },
+    'United States': { code: 'us', cn: '美国', fifa: 'USA' },
+    'Uruguay': { code: 'uy', cn: '乌拉圭', fifa: 'URU' },
+    'Uzbekistan': { code: 'uz', cn: '乌兹别克斯坦', fifa: 'UZB' }
+};
+
+// 翻译占位符为中文
+function translatePlaceholder(name) {
+    if (!name) return '';
+    let result = name;
+    if (result.startsWith('Winner Match')) {
+        return result.replace('Winner Match ', 'M') + ' 胜者';
+    }
+    if (result.startsWith('Loser Match')) {
+        return result.replace('Loser Match ', 'M') + ' 负者';
+    }
+    result = result.replace(/Group\s+([A-L])\s+winners/gi, '$1组第一');
+    result = result.replace(/Group\s+([A-L])\s+runners-up/gi, '$1组第二');
+    result = result.replace(/Group\s+([A-L/]+)\s+third\s+place/gi, '$1组第三名');
+    return result;
+}
+
+// 格式化获取队伍展示名称：中文 + 三字FIFA国际码
+function getTeamDisplayName(englishName) {
+    if (!englishName) return '';
+    const isPlaceholder = englishName.startsWith('Winner Match') || 
+                        englishName.startsWith('Loser Match') || 
+                        englishName.includes('winners') || 
+                        englishName.includes('runners-up') || 
+                        englishName.includes('third place');
+                        
+    if (isPlaceholder) {
+        return `<span class="placeholder-team">${translatePlaceholder(englishName)}</span>`;
+    }
+    const meta = teamMetadata[englishName];
+    if (meta) {
+        return `${meta.cn} <span class="fifa-code">${meta.fifa}</span>`;
+    }
+    return englishName;
+}
+
+// 格式化获取简单纯文本展示名称：中文 (三字码)
+function getTeamSimpleName(englishName) {
+    if (!englishName) return '';
+    const isPlaceholder = englishName.startsWith('Winner Match') || 
+                        englishName.startsWith('Loser Match') || 
+                        englishName.includes('winners') || 
+                        englishName.includes('runners-up') || 
+                        englishName.includes('third place');
+                        
+    if (isPlaceholder) {
+        return translatePlaceholder(englishName);
+    }
+    const meta = teamMetadata[englishName];
+    if (meta) {
+        return `${meta.cn} (${meta.fifa})`;
+    }
+    return englishName;
+}
+
+// 仅获取中文名
+function getTeamChineseName(englishName) {
+    if (!englishName) return '';
+    const meta = teamMetadata[englishName];
+    return meta ? meta.cn : translatePlaceholder(englishName);
+}
+
 // 32强对决中的小组第三分配配置位
 const thirdPlaceSlots = [
     { matchNumber: 74, slot: 'awayTeam', options: ['A', 'B', 'C', 'D', 'F'] },
@@ -733,7 +846,7 @@ function renderMatchesList() {
                     <div class="flag-wrapper">
                         <img class="team-flag" src="${homeFlag}" alt="${m.homeTeam}">
                     </div>
-                    <span class="team-name" title="${m.homeTeam}">${m.homeTeam}</span>
+                    <span class="team-name" title="${getTeamSimpleName(m.homeTeam)}">${getTeamDisplayName(m.homeTeam)}</span>
                 </div>
                 
                 <div class="score-board">
@@ -744,7 +857,7 @@ function renderMatchesList() {
                     <div class="flag-wrapper">
                         <img class="team-flag" src="${awayFlag}" alt="${m.awayTeam}">
                     </div>
-                    <span class="team-name" title="${m.awayTeam}">${m.awayTeam}</span>
+                    <span class="team-name" title="${getTeamSimpleName(m.awayTeam)}">${getTeamDisplayName(m.awayTeam)}</span>
                 </div>
             </div>
             <div class="match-status-row">
@@ -809,7 +922,7 @@ function renderStandings() {
                     <td class="pos-num">${row.pos}</td>
                     <td class="team-col">
                         <img class="mini-flag" src="${flag}" alt="${row.team}">
-                        <span>${row.team}</span>
+                        <span>${getTeamSimpleName(row.team)}</span>
                     </td>
                     <td>${row.pld}</td>
                     <td>${row.w}</td>
@@ -899,14 +1012,14 @@ function renderBracket() {
                     <div class="bracket-team-row ${isHomeWinner ? 'winner' : ''}">
                         <div class="bracket-team-info">
                             <img class="bracket-team-flag" src="${getFlagUrl(m.homeTeam)}" alt="Flag">
-                            <span title="${m.homeTeam}">${m.homeTeam}</span>
+                            <span title="${getTeamSimpleName(m.homeTeam)}">${getTeamDisplayName(m.homeTeam)}</span>
                         </div>
                         <span class="bracket-team-score">${scoreHomeStr}</span>
                     </div>
                     <div class="bracket-team-row ${isAwayWinner ? 'winner' : ''}">
                         <div class="bracket-team-info">
                             <img class="bracket-team-flag" src="${getFlagUrl(m.awayTeam)}" alt="Flag">
-                            <span title="${m.awayTeam}">${m.awayTeam}</span>
+                            <span title="${getTeamSimpleName(m.awayTeam)}">${getTeamDisplayName(m.awayTeam)}</span>
                         </div>
                         <span class="bracket-team-score">${scoreAwayStr}</span>
                     </div>
@@ -935,8 +1048,8 @@ window.openEditScoreDialog = function(matchNumber) {
     document.getElementById('edit-match-number').textContent = `Match ${m.matchNumber}`;
     document.getElementById('edit-match-stage').textContent = m.stage === 'group-stage' ? `Group ${m.group}` : translateStage(m.stage);
     
-    document.getElementById('edit-home-name').textContent = m.homeTeam;
-    document.getElementById('edit-away-name').textContent = m.awayTeam;
+    document.getElementById('edit-home-name').textContent = getTeamSimpleName(m.homeTeam);
+    document.getElementById('edit-away-name').textContent = getTeamSimpleName(m.awayTeam);
     
     document.getElementById('edit-home-flag').src = getFlagUrl(m.homeTeam);
     document.getElementById('edit-away-flag').src = getFlagUrl(m.awayTeam);
