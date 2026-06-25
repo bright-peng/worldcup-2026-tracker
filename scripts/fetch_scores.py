@@ -70,7 +70,7 @@ def main():
                 status_raw = m['status']
                 
                 if h_score is not None and a_score is not None:
-                    status = 'finished' if status_raw == 'FINISHED' else ('live' if status_raw in live_statuses else 'scheduled')
+                    status = 'finished' if status_raw == 'FINISHED' else ('suspended' if status_raw == 'SUSPENDED' else ('live' if status_raw in live_statuses else 'scheduled'))
                     penalties = score_obj.get('penalties', {})
                     h_pen = penalties.get('home') if penalties else None
                     a_pen = penalties.get('away') if penalties else None
@@ -109,7 +109,7 @@ def main():
                 status_short = item['fixture']['status']['short']
                 
                 if h_score is not None and a_score is not None:
-                    status = 'finished' if status_short in finished_shorts else ('live' if status_short in live_shorts else 'scheduled')
+                    status = 'finished' if status_short in finished_shorts else ('suspended' if status_short in ['SUSP', 'PST'] else ('live' if status_short in live_shorts else 'scheduled'))
                     penalty_obj = item.get('score', {}).get('penalty', {})
                     h_pen = penalty_obj.get('home') if penalty_obj else None
                     a_pen = penalty_obj.get('away') if penalty_obj else None

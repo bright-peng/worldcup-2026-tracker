@@ -697,14 +697,22 @@ function renderMatchesList() {
             const timeStr = new Date(m.kickoffUtc).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
             scoreHtml = `<div class="match-time-placeholder">${timeStr}</div>`;
         } else {
-            // 进行中或已结束
+            // 进行中、已结束或因故中断
             scoreHtml = `
-                <div class="score-display ${m.status === 'live' ? 'live' : ''}">
+                <div class="score-display ${m.status === 'live' ? 'live' : ''} ${m.status === 'suspended' ? 'suspended' : ''}">
                     <span>${m.homeScore}</span>
                     <span class="score-sep">-</span>
                     <span>${m.awayScore}</span>
                 </div>
             `;
+            if (m.status === 'suspended') {
+                scoreHtml += `
+                    <div class="penalty-badge suspended-badge" style="color: var(--warning); border-color: rgba(255, 215, 0, 0.3); background: rgba(255, 215, 0, 0.05); margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; border: 1px solid;">
+                        <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
+                        比赛因故中断
+                    </div>
+                `;
+            }
             if (m.homePenalties !== null && m.awayPenalties !== null) {
                 scoreHtml += `<div class="penalty-badge">点球 ${m.homePenalties}:${m.awayPenalties}</div>`;
             }
@@ -758,6 +766,9 @@ function renderMatchesList() {
             </div>
         `;
     }
+    
+    // 初始化可能新渲染的 Lucide 图标
+    initLucide();
 }
 
 // 翻译阶段名称

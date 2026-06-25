@@ -436,6 +436,7 @@ body {
 .match-card.finished::before { background: var(--success); }
 .match-card.live::before { background: var(--secondary); animation: pulseBorder 1.5s infinite; }
 .match-card.scheduled::before { background: var(--color-text-muted); }
+.match-card.suspended::before { background: var(--warning); animation: pulseBorder 2s infinite; }
 
 @keyframes pulseBorder {
     0% { opacity: 0.5; }
