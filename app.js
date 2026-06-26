@@ -573,6 +573,28 @@ function createStandingRow(teamName) {
     };
 }
 
+// 判断单个小组是否全部完赛（2026年世界杯每小组6场比赛）
+function isGroupFinished(groupName) {
+    if (!appState.fixtures || appState.fixtures.length === 0) return false;
+    const groupMatches = appState.fixtures.filter(f => f.stage === 'group-stage' && f.group === groupName);
+    if (groupMatches.length === 0) return false;
+    return groupMatches.every(f => {
+        const m = appState.matches[f.matchNumber];
+        return m && m.status === 'finished';
+    });
+}
+
+// 判断整个小组赛阶段（共72场比赛）是否全部完赛
+function isAllGroupStageFinished() {
+    for (let i = 1; i <= 72; i++) {
+        const m = appState.matches[i];
+        if (!m || m.status !== 'finished') {
+            return false;
+        }
+    }
+    return true;
+}
+
 // 决定全部 32 个晋级名额
 function determineQualifiers(standings) {
     const qualifiers = {
@@ -582,14 +604,25 @@ function determineQualifiers(standings) {
     };
     
     const allThirdPlaces = [];
+    const isAllFinished = isAllGroupStageFinished();
     
     Object.keys(standings).forEach(group => {
         const list = standings[group];
-        if (list.length >= 2) {
+        const groupFin = isGroupFinished(group);
+        
+        // 只有在小组的全部 6 场比赛都打完的情况下，才确定出该组的前两名，送入对战图
+        if (groupFin && list.length >= 2) {
             qualifiers.winners[group] = list[0].team;
             qualifiers.runnersUp[group] = list[1].team;
+        } else {
+            // 小组未完赛前，出线名额保持待定 (null)
+            qualifiers.winners[group] = null;
+            qualifiers.runnersUp[group] = null;
         }
-        if (list.length >= 3) {
+        
+        // 只有在全部 72 场小组赛完全结束后，各小组第三名的横向排名才有意义。
+        // 小组赛未完全完赛前，不填充任何第三名的晋级席位，以防出现对阵临时乱跳的待定情况。
+        if (isAllFinished && list.length >= 3) {
             allThirdPlaces.push({
                 group: group,
                 team: list[2].team,
@@ -600,15 +633,20 @@ function determineQualifiers(standings) {
         }
     });
     
-    // 对 12 个小组的第三名进行排序，选前 8 个
-    allThirdPlaces.sort((x, y) => {
-        if (x.pts !== y.pts) return y.pts - x.pts;
-        if (x.gd !== y.gd) return y.gd - x.gd;
-        if (x.gf !== y.gf) return y.gf - x.gf;
-        return x.group.localeCompare(y.group);
-    });
+    if (isAllFinished) {
+        // 对 12 个小组的第三名进行排序，选前 8 个
+        allThirdPlaces.sort((x, y) => {
+            if (x.pts !== y.pts) return y.pts - x.pts;
+            if (x.gd !== y.gd) return y.gd - x.gd;
+            if (x.gf !== y.gf) return y.gf - x.gf;
+            return x.group.localeCompare(y.group);
+        });
+        
+        qualifiers.thirdPlaces = allThirdPlaces.slice(0, 8);
+    } else {
+        qualifiers.thirdPlaces = [];
+    }
     
-    qualifiers.thirdPlaces = allThirdPlaces.slice(0, 8);
     return qualifiers;
 }
 
@@ -646,6 +684,11 @@ function resolveGroupPlaceholder(placeholder, qualifiers, thirdPlacesAssigned) {
         return qualifiers.runnersUp[group] || placeholder;
     }
     if (placeholder.includes('third place')) {
+        // 如果未完赛，qualifiers.thirdPlaces 是空的，直接保留占位符
+        if (!qualifiers.thirdPlaces || qualifiers.thirdPlaces.length === 0) {
+            return placeholder;
+        }
+        
         // 从包含的小组选项中，挑出晋级且尚未分配的最好的第三名
         const matchConf = thirdPlaceSlots.find(c => placeholder.includes(c.options.join('/')));
         if (matchConf) {
