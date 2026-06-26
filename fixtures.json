@@ -866,7 +866,10 @@
       "awayTeam": "Sweden",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/japan-vs-sweden-2026-06-25"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/japan-vs-sweden-2026-06-25",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 58,
@@ -878,7 +881,10 @@
       "awayTeam": "Netherlands",
       "stadium": "Arrowhead Stadium",
       "hostCity": "kansas-city",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/tunisia-vs-netherlands-2026-06-25"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/tunisia-vs-netherlands-2026-06-25",
+      "homeScore": 0,
+      "awayScore": 2,
+      "status": "live"
     },
     {
       "matchNumber": 59,
