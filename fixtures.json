@@ -926,7 +926,10 @@
       "awayTeam": "France",
       "stadium": "Gillette Stadium",
       "hostCity": "boston",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/norway-vs-france-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/norway-vs-france-2026-06-26",
+      "homeScore": 1,
+      "awayScore": 3,
+      "status": "live"
     },
     {
       "matchNumber": 62,
@@ -938,7 +941,10 @@
       "awayTeam": "Iraq",
       "stadium": "BMO Field",
       "hostCity": "toronto",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/senegal-vs-iraq-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/senegal-vs-iraq-2026-06-26",
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 63,
