@@ -79,10 +79,11 @@ def main():
             except Exception:
                 continue
 
-        # 活跃刷新时区：开球前 15 分钟 到 开球后 4.5 小时内 (如果有暴雨中断，本地依然为 suspended/live，此判断依然成立)
-        if kickoff_dt - timedelta(minutes=15) <= now_utc <= kickoff_dt + timedelta(hours=4, minutes=30):
+        # 活跃刷新条件：只要比赛到了开球前 15 分钟（并且本地状态还不是 finished，在前置判断里已过滤），说明仍需抓取其比分以更新为 finished
+        # 这样即使 GitHub Actions 发生偶发延迟导致比赛结束后数小时才运行，看门狗依然会放行抓取，完美解决数据同步滞后的问题
+        if now_utc >= kickoff_dt - timedelta(minutes=15):
             has_active_match = True
-            print(f"📡 监测到活跃比赛中: Match {match['matchNumber']} ({match['homeTeam']} vs {match['awayTeam']})")
+            print(f"📡 监测到开球未完场比赛: Match {match['matchNumber']} ({match['homeTeam']} vs {match['awayTeam']})")
             break
 
     # 如果检测到没有处于正在踢或临近开球的比赛，关闭收费/限流数据源的调用，只使用免 Key 数据源
