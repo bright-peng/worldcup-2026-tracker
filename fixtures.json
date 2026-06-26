@@ -897,9 +897,9 @@
       "stadium": "SoFi Stadium",
       "hostCity": "los-angeles",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/turkiye-vs-united-states-2026-06-25",
-      "homeScore": 2,
-      "awayScore": 1,
-      "status": "live"
+      "homeScore": 3,
+      "awayScore": 2,
+      "status": "finished"
     },
     {
       "matchNumber": 60,
@@ -914,7 +914,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/paraguay-vs-australia-2026-06-25",
       "homeScore": 0,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 61,
