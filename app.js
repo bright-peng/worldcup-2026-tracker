@@ -365,8 +365,13 @@ async function loadMatchData() {
                 }
             } else {
                 // 3. 已经结束的历史比赛：
-                // 优先从 fixtures.json 中抓取回来的真实比分载入，无则使用 initialScoreSnapshots 兜底
-                if (!localData || matchObj.homeScore === null) {
+                // 只要远程 fixtures.json 已经标为 finished 且含有真实比分，而本地还没标为 finished，就强制进行比分覆盖同步。
+                // 这样能有效打破 LocalStorage 脏缓存的锁定，并在后续运行中正确载入真实完赛比分，同时保留用户手动的模拟成果。
+                const isRemoteFinished = fixture.homeScore !== null && fixture.homeScore !== undefined && (fixture.status === 'finished');
+                const isLocalNotFinished = matchObj.status !== 'finished';
+                const needsSync = !localData || matchObj.homeScore === null || (isLocalNotFinished && isRemoteFinished);
+                
+                if (needsSync) {
                     if (fixture.homeScore !== undefined && fixture.homeScore !== null) {
                         matchObj.homeScore = fixture.homeScore;
                         matchObj.awayScore = fixture.awayScore;
