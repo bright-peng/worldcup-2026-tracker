@@ -928,8 +928,8 @@
       "hostCity": "boston",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/norway-vs-france-2026-06-26",
       "homeScore": 1,
-      "awayScore": 3,
-      "status": "live"
+      "awayScore": 4,
+      "status": "finished"
     },
     {
       "matchNumber": 62,
@@ -942,9 +942,9 @@
       "stadium": "BMO Field",
       "hostCity": "toronto",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/senegal-vs-iraq-2026-06-26",
-      "homeScore": 1,
+      "homeScore": 5,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 63,
