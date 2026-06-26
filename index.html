@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -81,7 +81,7 @@
                 <div class="toolbar glass-panel">
                     <div class="search-box">
                         <i data-lucide="search"></i>
-                        <input type="text" id="match-search" placeholder="搜索国家队名称（例如：Mexico）...">
+                        <input type="text" id="match-search" placeholder="搜索队名（支持中文/英文/FIFA代码，例如：德国、GER）...">
                     </div>
                     
                     <div class="filter-group">
@@ -291,5 +291,23 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="app.js"></script>
+    <script>
+    // 移动端下拉菜单触摸支持
+    document.querySelectorAll('.dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = btn.closest('.dropdown');
+            // 关闭其他打开的下拉菜单
+            document.querySelectorAll('.dropdown.open').forEach(d => {
+                if (d !== dropdown) d.classList.remove('open');
+            });
+            dropdown.classList.toggle('open');
+        });
+    });
+    // 点击页面其他区域关闭
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+    });
+    </script>
 </body>
 </html>

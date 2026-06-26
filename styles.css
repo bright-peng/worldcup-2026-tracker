@@ -261,6 +261,10 @@ body {
     display: block;
 }
 
+.dropdown.open .dropdown-content {
+    display: block;
+}
+
 .text-danger {
     color: var(--danger) !important;
 }

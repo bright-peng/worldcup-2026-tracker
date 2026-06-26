@@ -2,59 +2,8 @@
  * 2026 FIFA World Cup Score Tracker & Simulator - Core Logic
  */
 
-// 国家名与 flagcdn 双字母代码映射表
-const countryToCode = {
-    'Algeria': 'dz',
-    'Argentina': 'ar',
-    'Australia': 'au',
-    'Austria': 'at',
-    'Belgium': 'be',
-    'Bosnia and Herzegovina': 'ba',
-    'Brazil': 'br',
-    'Cabo Verde': 'cv',
-    'Canada': 'ca',
-    'Colombia': 'co',
-    'Congo DR': 'cd',
-    "Cote d'Ivoire": 'ci',
-    'Croatia': 'hr',
-    'Curacao': 'cw',
-    'Czechia': 'cz',
-    'Ecuador': 'ec',
-    'Egypt': 'eg',
-    'England': 'gb-eng',
-    'France': 'fr',
-    'Germany': 'de',
-    'Ghana': 'gh',
-    'Haiti': 'ht',
-    'IR Iran': 'ir',
-    'Iraq': 'iq',
-    'Japan': 'jp',
-    'Jordan': 'jo',
-    'Korea Republic': 'kr',
-    'Mexico': 'mx',
-    'Morocco': 'ma',
-    'Netherlands': 'nl',
-    'New Zealand': 'nz',
-    'Norway': 'no',
-    'Panama': 'pa',
-    'Paraguay': 'py',
-    'Portugal': 'pt',
-    'Qatar': 'qa',
-    'Saudi Arabia': 'sa',
-    'Scotland': 'gb-sct',
-    'Senegal': 'sn',
-    'South Africa': 'za',
-    'Spain': 'es',
-    'Sweden': 'se',
-    'Switzerland': 'ch',
-    'Tunisia': 'tn',
-    'Turkiye': 'tr',
-    'United States': 'us',
-    'Uruguay': 'uy',
-    'Uzbekistan': 'uz'
-};
-
-// 统一国家队元数据（中文名与 FIFA 三字码）
+// 统一国家队元数据（国旗代码、中文名、FIFA 三字码）
+// 合并了原来的 countryToCode 映射，避免重复维护
 const teamMetadata = {
     'Algeria': { code: 'dz', cn: '阿尔及利亚', fifa: 'ALG' },
     'Argentina': { code: 'ar', cn: '阿根廷', fifa: 'ARG' },
@@ -228,10 +177,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 开启定时轮询：每 60 秒自动 Fetch 本地已更新的 fixtures.json 静态文件，同步最新赛况比分
-    setInterval(async () => {
-        await reloadMatchesDataOnly();
-    }, 60000);
+    // 开启智能定时轮询：正常每 60 秒同步一次，连续失败超过阈值后自动降频至 5 分钟
+    function scheduleReload() {
+        const interval = _reloadFailCount >= _RELOAD_MAX_FAIL ? 300000 : 60000;
+        setTimeout(async () => {
+            await reloadMatchesDataOnly();
+            scheduleReload();
+        }, interval);
+    }
+    scheduleReload();
 });
 
 function initLucide() {
@@ -240,41 +194,15 @@ function initLucide() {
     }
 }
 
-// 载入 API 配置
+// 载入 API 配置（仅从 LocalStorage 读取，不再通过 HTTP 暴露 .env 文件）
 async function loadApiConfig() {
     let hasToken = false;
-    
-    // 1. 尝试从本地项目根目录的 .env 文件加载环境变量
-    try {
-        const response = await fetch('./.env');
-        if (response.ok) {
-            const text = await response.text();
-            
-            // 匹配 Football-Data API Token
-            const fdMatch = text.match(/FOOTBALL_DATA_API_TOKEN\s*=\s*([a-zA-Z0-9]+)/);
-            if (fdMatch && fdMatch[1]) {
-                appState.apiConfig.footballDataToken = fdMatch[1].trim();
-                document.getElementById('api-key-football-data').value = appState.apiConfig.footballDataToken;
-                hasToken = true;
-            }
 
-            // 匹配 RapidAPI Key
-            const raMatch = text.match(/RAPID_API_KEY\s*=\s*([a-zA-Z0-9]+)/);
-            if (raMatch && raMatch[1]) {
-                appState.apiConfig.rapidApiKey = raMatch[1].trim();
-                document.getElementById('api-key-rapidapi').value = appState.apiConfig.rapidApiKey;
-                hasToken = true;
-            }
-        }
-    } catch (e) {
-        console.warn('从 .env 加载配置失败，将尝试从 LocalStorage 读取', e);
-    }
-
-    // 2. 尝试从 LocalStorage 读取未被覆盖的配置
+    // 从 LocalStorage 读取已保存的 API 配置
     const savedConfig = localStorage.getItem('worldcup_api_config');
     if (savedConfig) {
         const parsed = JSON.parse(savedConfig);
-        if (!appState.apiConfig.footballDataToken && parsed.footballDataToken) {
+        if (parsed.footballDataToken) {
             appState.apiConfig.footballDataToken = parsed.footballDataToken;
             document.getElementById('api-key-football-data').value = parsed.footballDataToken;
         }
@@ -394,12 +322,21 @@ async function loadMatchData() {
     }
 }
 
+// 定时轮询连续失败计数器
+let _reloadFailCount = 0;
+const _RELOAD_MAX_FAIL = 5; // 连续失败超过此阈值后降频
+
 // 自动 Fetch 静态赛程数据（由 Actions 定期更新），合并比分完成前端自动无感刷新
 async function reloadMatchesDataOnly() {
     try {
         const response = await fetch('./fixtures.json?t=' + Date.now()); // 加时间戳，防缓存
-        if (!response.ok) return;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
         const data = await response.json();
+        
+        // 请求成功，重置失败计数
+        _reloadFailCount = 0;
         
         let dataChanged = false;
         
@@ -433,7 +370,12 @@ async function reloadMatchesDataOnly() {
             showToast('已同步最新比赛比分！', 'info');
         }
     } catch (e) {
-        console.warn('定时轮询比分同步失败:', e);
+        _reloadFailCount++;
+        if (_reloadFailCount === _RELOAD_MAX_FAIL) {
+            console.warn(`定时轮询已连续失败 ${_RELOAD_MAX_FAIL} 次，降低刷新频率至 5 分钟/次`);
+            showToast('数据同步暂时异常，已自动降低刷新频率。', 'error');
+        }
+        console.warn(`定时轮询比分同步失败 (第 ${_reloadFailCount} 次):`, e);
     }
 }
 
@@ -452,26 +394,26 @@ function saveMatchesToLocalStorage() {
     localStorage.setItem('worldcup_2026_matches', JSON.stringify(appState.matches));
 }
 
-// 获取国旗 URL
+// 获取国旗 URL（直接从统一的 teamMetadata 中取 code）
 function getFlagUrl(teamName) {
     if (!teamName || teamName.includes('runners-up') || teamName.includes('winners') || teamName.includes('third place') || teamName.includes('Match') || teamName.includes('Winner') || teamName.includes('Loser')) {
         return 'https://flagcdn.com/w80/un.png'; // 占位联合旗帜
     }
-    const code = countryToCode[teamName];
-    if (code) {
-        return `https://flagcdn.com/w80/${code}.png`;
+    const meta = teamMetadata[teamName];
+    if (meta && meta.code) {
+        return `https://flagcdn.com/w80/${meta.code}.png`;
     }
     return 'https://flagcdn.com/w80/un.png';
 }
 
 // 渲染所有组件
 function renderAll() {
-    // 运行晋级和积分计算引擎
-    runEngine();
+    // 运行晋级和积分计算引擎，返回已计算的积分榜数据供渲染复用
+    const standings = runEngine();
     
-    // 渲染各个 Tab 页
+    // 渲染各个 Tab 页（复用积分榜，避免重复计算）
     renderMatchesList();
-    renderStandings();
+    renderStandings(standings);
     renderBracket();
     initLucide();
 }
@@ -494,6 +436,9 @@ function runEngine() {
     
     // 5. 保存计算后的状态到本地
     saveMatchesToLocalStorage();
+    
+    // 6. 返回积分榜供渲染复用，避免 renderStandings 重复计算
+    return standings;
 }
 
 // 计算小组积分榜
@@ -820,10 +765,18 @@ function renderMatchesList() {
         const m = appState.matches[i];
         if (!m) continue;
         
-        // 1. 过滤：搜索词
+        // 1. 过滤：搜索词（同时匹配英文队名、中文队名和 FIFA 三字码）
         const homeName = m.homeTeam.toLowerCase();
         const awayName = m.awayTeam.toLowerCase();
-        if (searchVal && !homeName.includes(searchVal) && !awayName.includes(searchVal)) {
+        const homeCn = getTeamChineseName(m.homeTeam).toLowerCase();
+        const awayCn = getTeamChineseName(m.awayTeam).toLowerCase();
+        const homeMeta = teamMetadata[m.homeTeam];
+        const awayMeta = teamMetadata[m.awayTeam];
+        const homeFifa = homeMeta ? homeMeta.fifa.toLowerCase() : '';
+        const awayFifa = awayMeta ? awayMeta.fifa.toLowerCase() : '';
+        if (searchVal && !homeName.includes(searchVal) && !awayName.includes(searchVal)
+            && !homeCn.includes(searchVal) && !awayCn.includes(searchVal)
+            && !homeFifa.includes(searchVal) && !awayFifa.includes(searchVal)) {
             continue;
         }
         
@@ -1009,9 +962,7 @@ function renderMatchesList() {
             </div>
         `;
     }
-    
-    // 初始化可能新渲染的 Lucide 图标
-    initLucide();
+    // 注意：不在此处调用 initLucide()，由上层 renderAll() 统一调用一次以减少 DOM 遍历开销
 }
 
 // 翻译阶段名称
@@ -1028,12 +979,13 @@ function translateStage(stage) {
     return dict[stage] || stage;
 }
 
-// 渲染小组积分榜 (Tab 2)
-function renderStandings() {
+// 渲染小组积分榜 (Tab 2)，接收已计算好的积分榜数据以避免重复计算
+function renderStandings(standings) {
     const container = document.getElementById('standings-grid-container');
     container.innerHTML = '';
     
-    const standings = calculateGroupStandings();
+    // 如果没传入积分榜（兜底），则计算一次
+    if (!standings) standings = calculateGroupStandings();
     
     Object.keys(standings).forEach(group => {
         const card = document.createElement('div');
@@ -1354,7 +1306,10 @@ function showToast(message, type = 'info') {
         <span>${message}</span>
     `;
     container.appendChild(toast);
-    initLucide();
+    // 仅对新增的 toast 元素进行局部图标初始化，避免遍历整个 DOM
+    if (window.lucide) {
+        window.lucide.createIcons({ nodes: [toast] });
+    }
     
     setTimeout(() => {
         toast.remove();

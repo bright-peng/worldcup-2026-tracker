@@ -63,9 +63,6 @@ def main():
     # --------------------------------------------------------------------------
     has_active_match = False
     for match in local_data['fixtures']:
-        # 我们仅针对小组赛（即需要增量抓取和投票的对象）进行判定
-        if match['stage'] != 'group-stage':
-            continue
         # 如果本场已经结束，不用为此开启活跃状态
         if match.get('status') == 'finished':
             continue
@@ -205,9 +202,6 @@ def main():
     
     # 遍历本地所有赛程，进行增量窗口判定
     for match in local_data['fixtures']:
-        # 1. 增量筛选：仅更新“小组赛”
-        if match['stage'] != 'group-stage':
-            continue
             
         m_num = match['matchNumber']
         kickoff_utc_str = match['kickoffUtc']
