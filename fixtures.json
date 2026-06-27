@@ -956,7 +956,10 @@
       "awayTeam": "IR Iran",
       "stadium": "Lumen Field",
       "hostCity": "seattle",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/egypt-vs-ir-iran-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/egypt-vs-ir-iran-2026-06-26",
+      "homeScore": 1,
+      "awayScore": 1,
+      "status": "live"
     },
     {
       "matchNumber": 64,
@@ -968,7 +971,10 @@
       "awayTeam": "Belgium",
       "stadium": "BC Place",
       "hostCity": "vancouver",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/new-zealand-vs-belgium-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/new-zealand-vs-belgium-2026-06-26",
+      "homeScore": 0,
+      "awayScore": 2,
+      "status": "live"
     },
     {
       "matchNumber": 65,
@@ -983,7 +989,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/cabo-verde-vs-saudi-arabia-2026-06-26",
       "homeScore": 0,
       "awayScore": 0,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "matchNumber": 66,
@@ -997,8 +1003,8 @@
       "hostCity": "guadalajara",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/uruguay-vs-spain-2026-06-26",
       "homeScore": 0,
-      "awayScore": 0,
-      "status": "scheduled"
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 67,
