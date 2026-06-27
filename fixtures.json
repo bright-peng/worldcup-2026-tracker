@@ -1018,7 +1018,7 @@
       "hostCity": "new-york",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/panama-vs-england-2026-06-27",
       "homeScore": 0,
-      "awayScore": 0,
+      "awayScore": 2,
       "status": "live"
     },
     {
@@ -1032,9 +1032,9 @@
       "stadium": "Lincoln Financial Field",
       "hostCity": "philadelphia",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/croatia-vs-ghana-2026-06-27",
-      "homeScore": 0,
+      "homeScore": 1,
       "awayScore": 0,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "matchNumber": 69,
