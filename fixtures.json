@@ -1016,7 +1016,10 @@
       "awayTeam": "England",
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/panama-vs-england-2026-06-27"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/panama-vs-england-2026-06-27",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 68,
@@ -1028,7 +1031,10 @@
       "awayTeam": "Ghana",
       "stadium": "Lincoln Financial Field",
       "hostCity": "philadelphia",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/croatia-vs-ghana-2026-06-27"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/croatia-vs-ghana-2026-06-27",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "scheduled"
     },
     {
       "matchNumber": 69,
