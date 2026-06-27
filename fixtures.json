@@ -959,7 +959,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/egypt-vs-ir-iran-2026-06-26",
       "homeScore": 1,
       "awayScore": 1,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 64,
@@ -972,9 +972,9 @@
       "stadium": "BC Place",
       "hostCity": "vancouver",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/new-zealand-vs-belgium-2026-06-26",
-      "homeScore": 0,
-      "awayScore": 2,
-      "status": "live"
+      "homeScore": 1,
+      "awayScore": 5,
+      "status": "finished"
     },
     {
       "matchNumber": 65,
