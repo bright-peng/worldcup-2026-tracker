@@ -1019,7 +1019,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/panama-vs-england-2026-06-27",
       "homeScore": 0,
       "awayScore": 2,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 68,
@@ -1032,9 +1032,9 @@
       "stadium": "Lincoln Financial Field",
       "hostCity": "philadelphia",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/croatia-vs-ghana-2026-06-27",
-      "homeScore": 1,
-      "awayScore": 0,
-      "status": "live"
+      "homeScore": 2,
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 69,
@@ -1070,7 +1070,10 @@
       "awayTeam": "Portugal",
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/colombia-vs-portugal-2026-06-27"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/colombia-vs-portugal-2026-06-27",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "scheduled"
     },
     {
       "matchNumber": 72,
@@ -1082,7 +1085,10 @@
       "awayTeam": "Uzbekistan",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/congo-dr-vs-uzbekistan-2026-06-27"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/congo-dr-vs-uzbekistan-2026-06-27",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "scheduled"
     },
     {
       "matchNumber": 73,
