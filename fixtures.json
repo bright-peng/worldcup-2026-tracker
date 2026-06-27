@@ -980,7 +980,10 @@
       "awayTeam": "Saudi Arabia",
       "stadium": "NRG Stadium",
       "hostCity": "houston",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/cabo-verde-vs-saudi-arabia-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/cabo-verde-vs-saudi-arabia-2026-06-26",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "scheduled"
     },
     {
       "matchNumber": 66,
@@ -992,7 +995,10 @@
       "awayTeam": "Spain",
       "stadium": "Estadio Akron",
       "hostCity": "guadalajara",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/uruguay-vs-spain-2026-06-26"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/uruguay-vs-spain-2026-06-26",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "scheduled"
     },
     {
       "matchNumber": 67,
