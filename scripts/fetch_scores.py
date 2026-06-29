@@ -38,6 +38,231 @@ def fetch_url(url, headers=None):
         print(f"⚠️ 请求 URL 失败 [{url}]: {e}")
         return None
 
+def calculate_standings_and_resolve_teams(fixtures):
+    # 1. 初始化 A-L 组的积分表
+    groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
+    standings = {g: {} for g in groups}
+    
+    def create_row(team):
+        return {'team': team, 'pld': 0, 'w': 0, 'd': 0, 'l': 0, 'gf': 0, 'ga': 0, 'gd': 0, 'pts': 0}
+
+    for f in fixtures:
+        if f.get('stage') == 'group-stage':
+            g = f['group']
+            if f['homeTeam'] not in standings[g]:
+                standings[g][f['homeTeam']] = create_row(f['homeTeam'])
+            if f['awayTeam'] not in standings[g]:
+                standings[g][f['awayTeam']] = create_row(f['awayTeam'])
+                
+    # 累加小组赛 (Match 1 到 72)
+    for f in fixtures:
+        if f.get('stage') != 'group-stage':
+            continue
+        if f.get('status') == 'finished' and f.get('homeScore') is not None and f.get('awayScore') is not None:
+            g = f['group']
+            h = standings[g][f['homeTeam']]
+            a = standings[g][f['awayTeam']]
+            h_score = int(f['homeScore'])
+            a_score = int(f['awayScore'])
+            
+            h['pld'] += 1
+            a['pld'] += 1
+            h['gf'] += h_score
+            h['ga'] += a_score
+            a['gf'] += a_score
+            a['ga'] += h_score
+            
+            if h_score > a_score:
+                h['w'] += 1
+                h['pts'] += 3
+                a['l'] += 1
+            elif h_score < a_score:
+                a['w'] += 1
+                a['pts'] += 3
+                h['l'] += 1
+            else:
+                h['d'] += 1
+                a['d'] += 1
+                h['pts'] += 1
+                a['pts'] += 1
+            h['gd'] = h['gf'] - h['ga']
+            a['gd'] = a['gf'] - a['ga']
+            
+    # 对小组进行排序
+    sorted_standings = {}
+    for g in groups:
+        teams_list = list(standings[g].values())
+        # Timsort 稳定排序：字典序 -> 总进球 -> 净胜球 -> 积分
+        teams_list.sort(key=lambda x: x['team'])
+        teams_list.sort(key=lambda x: x['gf'], reverse=True)
+        teams_list.sort(key=lambda x: x['gd'], reverse=True)
+        teams_list.sort(key=lambda x: x['pts'], reverse=True)
+        
+        sorted_standings[g] = teams_list
+        for idx, row in enumerate(sorted_standings[g]):
+            row['pos'] = idx + 1
+            
+    def is_group_finished(g_name):
+        group_matches = [f for f in fixtures if f.get('stage') == 'group-stage' and f.get('group') == g_name]
+        if not group_matches:
+            return False
+        return all(f.get('status') == 'finished' for f in group_matches)
+        
+    all_group_finished = all(f.get('status') == 'finished' for f in fixtures if f.get('stage') == 'group-stage')
+    
+    qualifiers = {
+        'winners': {},
+        'runnersUp': {},
+        'thirdPlaces': []
+    }
+    
+    all_third_places = []
+    for g in groups:
+        list_teams = sorted_standings[g]
+        g_fin = is_group_finished(g)
+        if g_fin and len(list_teams) >= 2:
+            qualifiers['winners'][g] = list_teams[0]['team']
+            qualifiers['runnersUp'][g] = list_teams[1]['team']
+        else:
+            qualifiers['winners'][g] = None
+            qualifiers['runnersUp'][g] = None
+            
+        if all_group_finished and len(list_teams) >= 3:
+            all_third_places.append({
+                'group': g,
+                'team': list_teams[2]['team'],
+                'pts': list_teams[2]['pts'],
+                'gd': list_teams[2]['gd'],
+                'gf': list_teams[2]['gf']
+            })
+            
+    if all_group_finished:
+        all_third_places.sort(key=lambda x: x['group'])
+        all_third_places.sort(key=lambda x: x['gf'], reverse=True)
+        all_third_places.sort(key=lambda x: x['gd'], reverse=True)
+        all_third_places.sort(key=lambda x: x['pts'], reverse=True)
+        qualifiers['thirdPlaces'] = all_third_places[:8]
+    else:
+        qualifiers['thirdPlaces'] = []
+        
+    matches = {}
+    for f in fixtures:
+        matches[f['matchNumber']] = {
+            'matchNumber': f['matchNumber'],
+            'stage': f['stage'],
+            'group': f.get('group'),
+            'homeTeam': f['homeTeam'],
+            'awayTeam': f['awayTeam'],
+            'homeScore': f.get('homeScore'),
+            'awayScore': f.get('awayScore'),
+            'homePenalties': f.get('homePenalties'),
+            'awayPenalties': f.get('awayPenalties'),
+            'status': f.get('status', 'scheduled')
+        }
+        
+    third_place_slots = [
+        { 'matchNumber': 74, 'slot': 'awayTeam', 'options': ['A', 'B', 'C', 'D', 'F'] },
+        { 'matchNumber': 77, 'slot': 'awayTeam', 'options': ['C', 'D', 'F', 'G', 'H'] },
+        { 'matchNumber': 79, 'slot': 'awayTeam', 'options': ['C', 'E', 'F', 'H', 'I'] },
+        { 'matchNumber': 80, 'slot': 'awayTeam', 'options': ['E', 'H', 'I', 'J', 'K'] },
+        { 'matchNumber': 81, 'slot': 'awayTeam', 'options': ['B', 'E', 'F', 'I', 'J'] },
+        { 'matchNumber': 82, 'slot': 'awayTeam', 'options': ['A', 'E', 'H', 'I', 'J'] },
+        { 'matchNumber': 85, 'slot': 'awayTeam', 'options': ['E', 'F', 'G', 'I', 'J'] },
+        { 'matchNumber': 87, 'slot': 'awayTeam', 'options': ['D', 'E', 'I', 'J', 'L'] }
+    ]
+    
+    def resolve_group_placeholder(placeholder, third_places_assigned):
+        if 'winners' in placeholder:
+            g = placeholder.replace('Group ', '').replace(' winners', '').strip()
+            return qualifiers['winners'].get(g) or placeholder
+        if 'runners-up' in placeholder:
+            g = placeholder.replace('Group ', '').replace(' runners-up', '').strip()
+            return qualifiers['runnersUp'].get(g) or placeholder
+        if 'third place' in placeholder:
+            if not qualifiers['thirdPlaces']:
+                return placeholder
+            
+            match_conf = None
+            for c in third_place_slots:
+                if '/'.join(c['options']) in placeholder:
+                    match_conf = c
+                    break
+            
+            if match_conf:
+                for t in qualifiers['thirdPlaces']:
+                    if t['group'] in match_conf['options'] and t['team'] not in third_places_assigned:
+                        third_places_assigned.add(t['team'])
+                        return t['team']
+            
+            option_groups = placeholder.replace('Group ', '').replace(' third place', '').split('/')
+            for t in qualifiers['thirdPlaces']:
+                if t['group'] in option_groups and t['team'] not in third_places_assigned:
+                    third_places_assigned.add(t['team'])
+                    return t['team']
+        return placeholder
+
+    third_places_assigned = set()
+    for i in range(73, 89):
+        m = matches[i]
+        m['homeTeam'] = resolve_group_placeholder(m['homeTeam'], third_places_assigned)
+        m['awayTeam'] = resolve_group_placeholder(m['awayTeam'], third_places_assigned)
+        
+    def get_winner(match):
+        if match['homeScore'] is None or match['awayScore'] is None:
+            return None
+        h_s = int(match['homeScore'])
+        a_s = int(match['awayScore'])
+        if h_s > a_s:
+            return match['homeTeam']
+        if h_s < a_s:
+            return match['awayTeam']
+        if match['homePenalties'] is not None and match['awayPenalties'] is not None:
+            h_p = int(match['homePenalties'])
+            a_p = int(match['awayPenalties'])
+            if h_p > a_p:
+                return match['homeTeam']
+            if h_p < a_p:
+                return match['awayTeam']
+        return match['homeTeam']
+        
+    def get_loser(match):
+        if match['homeScore'] is None or match['awayScore'] is None:
+            return None
+        h_s = int(match['homeScore'])
+        a_s = int(match['awayScore'])
+        if h_s < a_s:
+            return match['homeTeam']
+        if h_s > a_s:
+            return match['awayTeam']
+        if match['homePenalties'] is not None and match['awayPenalties'] is not None:
+            h_p = int(match['homePenalties'])
+            a_p = int(match['awayPenalties'])
+            if h_p < a_p:
+                return match['homeTeam']
+            if h_p > a_p:
+                return match['awayTeam']
+        return match['awayTeam']
+
+    def resolve_knockout_placeholder(placeholder):
+        if placeholder.startswith('Winner Match'):
+            target_num = int(placeholder.replace('Winner Match ', '').strip())
+            prev_match = matches[target_num]
+            if prev_match['status'] == 'finished':
+                return get_winner(prev_match) or placeholder
+        if placeholder.startswith('Loser Match'):
+            target_num = int(placeholder.replace('Loser Match ', '').strip())
+            prev_match = matches[target_num]
+            if prev_match['status'] == 'finished':
+                return get_loser(prev_match) or placeholder
+        return placeholder
+
+    for i in range(89, 105):
+        m = matches[i]
+        m['homeTeam'] = resolve_knockout_placeholder(m['homeTeam'])
+        m['awayTeam'] = resolve_knockout_placeholder(m['awayTeam'])
+        
+    return matches
+
 def main():
     token = os.environ.get('FOOTBALL_DATA_API_TOKEN')
     rapid_key = os.environ.get('RAPID_API_KEY')
@@ -54,6 +279,9 @@ def main():
     except Exception as e:
         print(f"❌ 读取 fixtures.json 失败: {e}")
         sys.exit(1)
+
+    # 动态在内存中演算晋级对阵以解析淘汰赛的待定占位符（如 Group A runners-up）
+    resolved_matches = calculate_standings_and_resolve_teams(local_data['fixtures'])
 
     now_utc = datetime.now(timezone.utc)
     print(f"⏰ 当前 UTC 时间: {now_utc.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -80,7 +308,8 @@ def main():
         # 这样即使 GitHub Actions 发生偶发延迟导致比赛结束后数小时才运行，看门狗依然会放行抓取，完美解决数据同步滞后的问题
         if now_utc >= kickoff_dt - timedelta(minutes=15):
             has_active_match = True
-            print(f"📡 监测到开球未完场比赛: Match {match['matchNumber']} ({match['homeTeam']} vs {match['awayTeam']})")
+            resolved_match = resolved_matches[match['matchNumber']]
+            print(f"📡 监测到开球未完场比赛: Match {match['matchNumber']} ({resolved_match['homeTeam']} vs {resolved_match['awayTeam']})")
             break
 
     # 如果检测到没有处于正在踢或临近开球的比赛，关闭收费/限流数据源的调用，只使用免 Key 数据源
@@ -230,9 +459,10 @@ def main():
             # 不在滑动抓取窗口内，直接跳过，保持本地状态不变！
             continue
 
-        # 在投票池里查找对应的比赛
-        local_h = normalize_team_name(match['homeTeam'])
-        local_a = normalize_team_name(match['awayTeam'])
+        # 在投票池里查找对应的比赛，使用内存中解析出的真实队伍名称进行匹配
+        resolved_match = resolved_matches[m_num]
+        local_h = normalize_team_name(resolved_match['homeTeam'])
+        local_a = normalize_team_name(resolved_match['awayTeam'])
         
         # 支持主客队换位的匹配查找键
         key1 = f"{local_h}|{local_a}"
@@ -280,7 +510,7 @@ def main():
         # 如果有多个数据源返回了数据，但得票最高的只得到了 1 票（说明有冲突），
         # 此时我们优先信任级别最高的源：API-Football (源2) > Football-Data (源1) > GitHub (源3)
         if len(score_tuples) > 1 and count == 1:
-            print(f"⚠️ Match {m_num} ({match['homeTeam']} vs {match['awayTeam']}) 多源数据存在冲突 {score_tuples}。启用优先级决策。")
+            print(f"⚠️ Match {m_num} ({resolved_match['homeTeam']} vs {resolved_match['awayTeam']}) 多源数据存在冲突 {score_tuples}。启用优先级决策。")
             # 优先级选择
             priority_source = None
             for src_name in ['API-Football', 'Football-Data', 'GitHub-OpenFootball']:
@@ -308,7 +538,7 @@ def main():
             match.pop('homePenalties', None)
             match.pop('awayPenalties', None)
 
-        print(f"⚡ [窗口更新] Match {m_num} ({match['homeTeam']} vs {match['awayTeam']}): 真实比分更新为 {consensus_home}:{consensus_away}，状态: {consensus_status} (多源投票: {count}/{len(score_tuples)}票)")
+        print(f"⚡ [窗口更新] Match {m_num} ({resolved_match['homeTeam']} vs {resolved_match['awayTeam']}): 真实比分更新为 {consensus_home}:{consensus_away}，状态: {consensus_status} (多源投票: {count}/{len(score_tuples)}票)")
         updated_count += 1
 
     # 写回 fixtures.json

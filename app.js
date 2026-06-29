@@ -832,6 +832,15 @@ function renderMatchesList() {
     // 渲染天级分组与卡片
     sortedKeys.forEach(dateKey => {
         const matchesInDay = grouped[dateKey];
+        
+        // 同一天内的比赛按照开球时间升序排序，时间相同则按比赛编号排序
+        matchesInDay.sort((a, b) => {
+            const timeA = new Date(a.kickoffUtc).getTime();
+            const timeB = new Date(b.kickoffUtc).getTime();
+            if (timeA !== timeB) return timeA - timeB;
+            return a.matchNumber - b.matchNumber;
+        });
+        
         const isToday = (dateKey === todayStr);
         
         // 获取本地化日期字符串展示 (如 "06-15 星期一")
