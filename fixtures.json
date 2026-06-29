@@ -1106,7 +1106,10 @@
       "awayTeam": "Group B runners-up",
       "stadium": "SoFi Stadium",
       "hostCity": "los-angeles",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-a-runners-up-vs-group-b-runners-up-2026-06-28"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-a-runners-up-vs-group-b-runners-up-2026-06-28",
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 74,
