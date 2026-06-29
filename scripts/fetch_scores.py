@@ -201,9 +201,35 @@ def calculate_standings_and_resolve_teams(fixtures):
                     return t['team']
         return placeholder
 
+    # 检查是否是实际出线的 B, D, E, F, I, J, K, L 组合
+    qualified_groups = "".join(sorted([t['group'] for t in qualifiers['thirdPlaces']]))
+    is_standard_2026_combination = (qualified_groups == 'BDEFIJKL')
+    
+    # 官方 Annex C 精确映射（1E vs 3D, 1I vs 3F 等）
+    annex_c_map = {
+        74: 'D', # 1E (Germany) vs 3D (Paraguay)
+        77: 'F', # 1I (France) vs 3F (Sweden)
+        79: 'E', # 1A (Mexico) vs 3E (Ecuador)
+        80: 'K', # 1L (England) vs 3K (Congo DR)
+        81: 'B', # 1D (United States) vs 3B (Bosnia)
+        82: 'I', # 1G (Belgium) vs 3I (Senegal)
+        85: 'J', # 1B (Switzerland) vs 3J (Algeria)
+        87: 'L'  # 1K (Colombia) vs 3L (Ghana)
+    }
+
     third_places_assigned = set()
     for i in range(73, 89):
         m = matches[i]
+        if is_standard_2026_combination and i in annex_c_map:
+            target_group = annex_c_map[i]
+            target_team = next((t['team'] for t in qualifiers['thirdPlaces'] if t['group'] == target_group), None)
+            if target_team:
+                if 'third place' in m['homeTeam']:
+                    m['homeTeam'] = target_team
+                if 'third place' in m['awayTeam']:
+                    m['awayTeam'] = target_team
+                continue
+                
         m['homeTeam'] = resolve_group_placeholder(m['homeTeam'], third_places_assigned)
         m['awayTeam'] = resolve_group_placeholder(m['awayTeam'], third_places_assigned)
         

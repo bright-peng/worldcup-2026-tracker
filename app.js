@@ -599,6 +599,22 @@ function determineQualifiers(standings) {
 function populateRoundOf32(qualifiers) {
     const thirdPlacesAssigned = new Set();
     
+    // 检查是否是实际出线的 B, D, E, F, I, J, K, L 组合
+    const qualifiedGroups = qualifiers.thirdPlaces.map(t => t.group).sort().join('');
+    const isStandard2026Combination = (qualifiedGroups === 'BDEFIJKL');
+    
+    // 如果是标准组合，使用官方 Annex C 的精确映射（解决 1E vs 3D, 1I vs 3F 等对阵）
+    const annexCMap = {
+        74: 'D', // 1E (Germany) vs 3D (Paraguay)
+        77: 'F', // 1I (France) vs 3F (Sweden)
+        79: 'E', // 1A (Mexico) vs 3E (Ecuador)
+        80: 'K', // 1L (England) vs 3K (Congo DR)
+        81: 'B', // 1D (United States) vs 3B (Bosnia)
+        82: 'I', // 1G (Belgium) vs 3I (Senegal)
+        85: 'J', // 1B (Switzerland) vs 3J (Algeria)
+        87: 'L'  // 1K (Colombia) vs 3L (Ghana)
+    };
+    
     for (let i = 73; i <= 88; i++) {
         const m = appState.matches[i];
         if (!m) continue;
@@ -611,9 +627,19 @@ function populateRoundOf32(qualifiers) {
         if (!m.homeTeamPlaceholder) m.homeTeamPlaceholder = m.homeTeam;
         if (!m.awayTeamPlaceholder) m.awayTeamPlaceholder = m.awayTeam;
         
-        // 解析主队
+        // 如果是官方特定的标准出线组合，直接使用精准映射进行分配
+        if (isStandard2026Combination && annexCMap[i]) {
+            const targetGroup = annexCMap[i];
+            const targetTeam = qualifiers.thirdPlaces.find(t => t.group === targetGroup)?.team;
+            if (targetTeam) {
+                if (m.homeTeam.includes('third place')) m.homeTeam = targetTeam;
+                if (m.awayTeam.includes('third place')) m.awayTeam = targetTeam;
+                continue;
+            }
+        }
+        
+        // 否则走原来的贪心算法解析逻辑
         m.homeTeam = resolveGroupPlaceholder(m.homeTeam, qualifiers, thirdPlacesAssigned);
-        // 解析客队
         m.awayTeam = resolveGroupPlaceholder(m.awayTeam, qualifiers, thirdPlacesAssigned);
     }
 }
