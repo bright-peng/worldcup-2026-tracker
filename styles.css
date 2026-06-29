@@ -1361,3 +1361,105 @@ dialog::backdrop {
     color: var(--color-text-muted);
     font-size: 0.8rem;
 }
+
+/* ==========================================================================
+   赛事阶段折叠组件样式
+   ========================================================================== */
+.stage-section {
+    margin-bottom: 24px;
+}
+
+.stage-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 14px;
+    transition: var(--transition-smooth);
+}
+
+.stage-group-header:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-glow);
+    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.05);
+}
+
+.stage-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-text-muted);
+}
+
+/* 折叠状态下旋转箭头 */
+.stage-section.collapsed .toggle-arrow {
+    transform: rotate(-90deg);
+}
+
+.stage-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.stage-count-badge {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1px 8px;
+    border-radius: 10px;
+    color: var(--color-text-muted);
+}
+
+.stage-status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.stage-status-badge.finished {
+    background: rgba(0, 230, 118, 0.08);
+    border-color: rgba(0, 230, 118, 0.15);
+    color: var(--success);
+}
+
+.stage-status-badge.live {
+    background: rgba(0, 229, 255, 0.08);
+    border-color: rgba(0, 229, 255, 0.2);
+    color: var(--secondary);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.1);
+}
+
+.stage-status-badge.scheduled {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+}
+
+.stage-group-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    opacity: 1;
+    max-height: 10000px; /* 大容量支持展开 */
+    overflow: visible;
+    transition: opacity 0.3s ease, max-height 0.5s ease;
+}
+
+/* 折叠状态下隐藏内容 */
+.stage-section.collapsed .stage-group-content {
+    display: none;
+}
+
