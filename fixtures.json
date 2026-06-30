@@ -1177,7 +1177,10 @@
       "awayTeam": "Group I runners-up",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-e-runners-up-vs-group-i-runners-up-2026-06-30"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-e-runners-up-vs-group-i-runners-up-2026-06-30",
+      "homeScore": 1,
+      "awayScore": 2,
+      "status": "live"
     },
     {
       "matchNumber": 79,
