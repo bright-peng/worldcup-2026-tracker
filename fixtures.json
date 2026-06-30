@@ -1134,9 +1134,11 @@
       "stadium": "Estadio BBVA",
       "hostCity": "monterrey",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-f-winners-vs-group-c-runners-up-2026-06-29",
-      "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "homeScore": 4,
+      "awayScore": 4,
+      "status": "finished",
+      "homePenalties": 3,
+      "awayPenalties": 3
     },
     {
       "matchNumber": 76,
