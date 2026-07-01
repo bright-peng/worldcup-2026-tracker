@@ -1139,35 +1139,6 @@ function populateRoundOf32(qualifiers) {
         m.homeTeam = resolveGroupPlaceholder(m.homeTeam, qualifiers, thirdPlacesAssigned);
         m.awayTeam = resolveGroupPlaceholder(m.awayTeam, qualifiers, thirdPlacesAssigned);
     }
-};
-    
-    for (let i = 73; i <= 88; i++) {
-        const m = appState.matches[i];
-        if (!m) continue;
-        
-        // 重置回默认占位符，以便重新计算
-        m.homeTeam = m.homeTeamPlaceholder || appState.fixtures[i - 1].homeTeam;
-        m.awayTeam = m.awayTeamPlaceholder || appState.fixtures[i - 1].awayTeam;
-        
-        // 缓存初始占位符
-        if (!m.homeTeamPlaceholder) m.homeTeamPlaceholder = m.homeTeam;
-        if (!m.awayTeamPlaceholder) m.awayTeamPlaceholder = m.awayTeam;
-        
-        // 如果是官方特定的标准出线组合，直接使用精准映射进行分配
-        if (isStandard2026Combination && annexCMap[i]) {
-            const targetGroup = annexCMap[i];
-            const targetTeam = qualifiers.thirdPlaces.find(t => t.group === targetGroup)?.team;
-            if (targetTeam) {
-                if (m.homeTeam.includes('third place')) m.homeTeam = targetTeam;
-                if (m.awayTeam.includes('third place')) m.awayTeam = targetTeam;
-                continue;
-            }
-        }
-        
-        // 否则走原来的贪心算法解析逻辑
-        m.homeTeam = resolveGroupPlaceholder(m.homeTeam, qualifiers, thirdPlacesAssigned);
-        m.awayTeam = resolveGroupPlaceholder(m.awayTeam, qualifiers, thirdPlacesAssigned);
-    }
 }
 
 // 解析小组赛晋级占位符 (例如 "Group A runners-up", "Group E winners", "Group A/B/C/D/F third place")
