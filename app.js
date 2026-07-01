@@ -352,6 +352,21 @@ async function reloadMatchesDataOnly() {
                 const newHomePen = fixture.homePenalties !== undefined ? fixture.homePenalties : null;
                 const newAwayPen = fixture.awayPenalties !== undefined ? fixture.awayPenalties : null;
                 
+                // 同步后端写入的真实队名（取代占位符）
+                const isPlaceholder = (name) => !name || name.includes('winners') || name.includes('runners-up') || name.includes('third place') || name.includes('Winner') || name.includes('Loser');
+                if (fixture.homeTeam && !isPlaceholder(fixture.homeTeam)) {
+                    if (localMatchObj.homeTeam !== fixture.homeTeam) {
+                        localMatchObj.homeTeam = fixture.homeTeam;
+                        dataChanged = true;
+                    }
+                }
+                if (fixture.awayTeam && !isPlaceholder(fixture.awayTeam)) {
+                    if (localMatchObj.awayTeam !== fixture.awayTeam) {
+                        localMatchObj.awayTeam = fixture.awayTeam;
+                        dataChanged = true;
+                    }
+                }
+                
                 // 如果后端脚本把比分写入了 fixtures.json 并且与本地当前值不同，进行更新
                 if (newHomeScore !== null && (localMatchObj.homeScore !== newHomeScore || localMatchObj.awayScore !== newAwayScore || localMatchObj.status !== newStatus)) {
                     localMatchObj.homeScore = newHomeScore;

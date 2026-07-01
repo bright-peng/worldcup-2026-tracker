@@ -1051,7 +1051,7 @@ def main():
                 consensus_a_pen = priority_source['homePen'] if is_reversed else priority_source['awayPen']
                 print(f"👉 采用高优先级源 [{priority_source['source']}] 的比分: {consensus_home}-{consensus_away} ({consensus_status})")
         
-        # 更新写入
+        # 更新写入比分
         match['homeScore'] = consensus_home
         match['awayScore'] = consensus_away
         match['status'] = consensus_status
@@ -1062,7 +1062,12 @@ def main():
             match.pop('homePenalties', None)
             match.pop('awayPenalties', None)
 
-        print(f"⚡ [窗口更新] Match {m_num} ({resolved_match['homeTeam']} vs {resolved_match['awayTeam']}): 真实比分更新为 {consensus_home}:{consensus_away}，状态: {consensus_status} (多源投票: {count}/{len(score_tuples)}票)")
+        # 直接将 API 返回的真实队名写入 fixtures.json，彻底取代占位符
+        # 这样前端不需要任何推算逻辑，直接显示即可
+        match['homeTeam'] = local_h
+        match['awayTeam'] = local_a
+
+        print(f"⚡ [窗口更新] Match {m_num} ({local_h} vs {local_a}): 真实比分更新为 {consensus_home}:{consensus_away}，状态: {consensus_status} (多源投票: {count}/{len(score_tuples)}票)")
         updated_count += 1
 
     # 写回 fixtures.json
