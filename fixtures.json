@@ -1242,7 +1242,10 @@
       "awayTeam": "Senegal",
       "stadium": "Lumen Field",
       "hostCity": "seattle",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-g-winners-vs-group-a-e-h-i-j-third-place-2026-07-01"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-g-winners-vs-group-a-e-h-i-j-third-place-2026-07-01",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 83,
