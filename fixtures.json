@@ -1215,7 +1215,10 @@
       "awayTeam": "Congo DR",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-l-winners-vs-group-e-h-i-j-k-third-place-2026-07-01"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-l-winners-vs-group-e-h-i-j-k-third-place-2026-07-01",
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "scheduled"
     },
     {
       "matchNumber": 81,
