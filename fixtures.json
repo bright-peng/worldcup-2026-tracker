@@ -1243,9 +1243,9 @@
       "stadium": "Lumen Field",
       "hostCity": "seattle",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-g-winners-vs-group-a-e-h-i-j-third-place-2026-07-01",
-      "homeScore": 2,
+      "homeScore": 3,
       "awayScore": 2,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 83,
