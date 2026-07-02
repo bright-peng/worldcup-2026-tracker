@@ -1272,7 +1272,10 @@
       "awayTeam": "Austria",
       "stadium": "SoFi Stadium",
       "hostCity": "los-angeles",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-h-winners-vs-group-j-runners-up-2026-07-02"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-h-winners-vs-group-j-runners-up-2026-07-02",
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 85,
