@@ -1231,9 +1231,9 @@
       "stadium": "Levi's Stadium",
       "hostCity": "san-francisco",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-d-winners-vs-group-b-e-f-i-j-third-place-2026-07-01",
-      "homeScore": 1,
+      "homeScore": 2,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 82,
