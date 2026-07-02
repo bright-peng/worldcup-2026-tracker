@@ -1273,9 +1273,9 @@
       "stadium": "SoFi Stadium",
       "hostCity": "los-angeles",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-h-winners-vs-group-j-runners-up-2026-07-02",
-      "homeScore": 1,
+      "homeScore": 3,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 85,
