@@ -1050,7 +1050,20 @@ def main():
                 consensus_h_pen = priority_source['awayPen'] if is_reversed else priority_source['homePen']
                 consensus_a_pen = priority_source['homePen'] if is_reversed else priority_source['awayPen']
                 print(f"👉 采用高优先级源 [{priority_source['source']}] 的比分: {consensus_home}-{consensus_away} ({consensus_status})")
-        
+        # 🛡️ 比分回退保护：比赛进行中，进球数只增不减
+        old_h = match.get('homeScore')
+        old_a = match.get('awayScore')
+        old_status = match.get('status', 'scheduled')
+        if old_h is not None and old_a is not None:
+            old_total = int(old_h) + int(old_a)
+            new_total = int(consensus_home) + int(consensus_away)
+            if old_status == 'finished' and consensus_status != 'finished':
+                print(f"🛡️ [回退保护] Match {m_num}: 本地已 finished，忽略非 finished 的数据")
+                continue
+            if consensus_status != 'finished' and new_total < old_total:
+                print(f"🛡️ [回退保护] Match {m_num}: 总进球从 {old_total} 回退到 {new_total}，跳过脏数据")
+                continue
+
         # 更新写入比分
         match['homeScore'] = consensus_home
         match['awayScore'] = consensus_away
