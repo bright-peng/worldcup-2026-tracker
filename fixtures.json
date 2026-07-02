@@ -1260,7 +1260,10 @@
       "awayTeam": "Croatia",
       "stadium": "BMO Field",
       "hostCity": "toronto",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-k-runners-up-vs-group-l-runners-up-2026-07-02"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-k-runners-up-vs-group-l-runners-up-2026-07-02",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 84,
