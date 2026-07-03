@@ -1305,7 +1305,10 @@
       "awayTeam": "Cabo Verde",
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-j-winners-vs-group-h-runners-up-2026-07-03"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-j-winners-vs-group-h-runners-up-2026-07-03",
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 87,
