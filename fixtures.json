@@ -1330,7 +1330,7 @@
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-d-runners-up-vs-group-g-runners-up-2026-07-03",
-      "homeScore": 0,
+      "homeScore": 1,
       "awayScore": 1,
       "status": "live"
     },
