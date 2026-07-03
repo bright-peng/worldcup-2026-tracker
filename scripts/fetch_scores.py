@@ -953,6 +953,10 @@ def main():
     # --------------------------------------------------------------------------
     updated_count = 0
     
+    def is_placeholder(name):
+        """判断队名是否仍然是占位符（如 'Group A winners'）"""
+        return not name or 'winners' in name or 'runners-up' in name or 'third place' in name or 'Winner' in name or 'Loser' in name
+
     # 遍历本地所有赛程，进行增量窗口判定
     for match in local_data['fixtures']:
             
@@ -983,10 +987,17 @@ def main():
             # 不在滑动抓取窗口内，直接跳过，保持本地状态不变！
             continue
 
-        # 在投票池里查找对应的比赛，使用内存中解析出的真实队伍名称进行匹配
-        resolved_match = resolved_matches[m_num]
-        local_h = normalize_team_name(resolved_match['homeTeam'])
-        local_a = normalize_team_name(resolved_match['awayTeam'])
+        # 在投票池里查找对应的比赛
+        # 优先使用 fixtures.json 中已写入的真实队名（由后端之前写入），
+        # 仅当队名仍是占位符时才走 resolved_matches 推算
+        
+        if not is_placeholder(match.get('homeTeam', '')) and not is_placeholder(match.get('awayTeam', '')):
+            local_h = normalize_team_name(match['homeTeam'])
+            local_a = normalize_team_name(match['awayTeam'])
+        else:
+            resolved_match = resolved_matches[m_num]
+            local_h = normalize_team_name(resolved_match['homeTeam'])
+            local_a = normalize_team_name(resolved_match['awayTeam'])
         
         # 支持主客队换位的匹配查找键
         key1 = f"{local_h}|{local_a}"

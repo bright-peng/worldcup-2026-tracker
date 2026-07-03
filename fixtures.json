@@ -1262,7 +1262,7 @@
       "hostCity": "toronto",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-k-runners-up-vs-group-l-runners-up-2026-07-02",
       "homeScore": 2,
-      "awayScore": 2,
+      "awayScore": 1,
       "status": "finished"
     },
     {
@@ -1290,7 +1290,10 @@
       "awayTeam": "Algeria",
       "stadium": "BC Place",
       "hostCity": "vancouver",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-b-winners-vs-group-e-f-g-i-j-third-place-2026-07-02"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-b-winners-vs-group-e-f-g-i-j-third-place-2026-07-02",
+      "homeScore": 2,
+      "awayScore": 0,
+      "status": "finished"
     },
     {
       "matchNumber": 86,
