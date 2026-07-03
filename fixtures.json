@@ -1329,7 +1329,10 @@
       "awayTeam": "Egypt",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-d-runners-up-vs-group-g-runners-up-2026-07-03"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-d-runners-up-vs-group-g-runners-up-2026-07-03",
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "live"
     },
     {
       "matchNumber": 89,
