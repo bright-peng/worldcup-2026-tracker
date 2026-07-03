@@ -1307,7 +1307,7 @@
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-j-winners-vs-group-h-runners-up-2026-07-03",
       "homeScore": 1,
-      "awayScore": 0,
+      "awayScore": 1,
       "status": "live"
     },
     {
