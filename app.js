@@ -246,8 +246,8 @@ async function loadMatchData() {
     }
     
     try {
-        // 先获取本地赛程的定义
-        const response = await fetch('./fixtures.json');
+        // 先获取本地赛程的定义，加时间戳防缓存
+        const response = await fetch('./fixtures.json?t=' + Date.now());
         const data = await response.json();
         appState.fixtures = data.fixtures;
         
@@ -276,37 +276,31 @@ async function loadMatchData() {
             const matchObj = appState.matches[mNum];
             const kickoffTime = new Date(fixture.kickoffUtc).getTime();
 
-            if (now < kickoffTime) {
-                // 1. 未来的比赛：强制为未开始，清空比分
+            if (fixture.homeScore !== null && fixture.homeScore !== undefined) {
+                // 1. 只要远程已经录入了真实比分，无条件强制使用远程的真实赛果
+                matchObj.homeScore = fixture.homeScore;
+                matchObj.awayScore = fixture.awayScore;
+                matchObj.status = fixture.status || 'finished';
+                matchObj.homePenalties = fixture.homePenalties !== undefined ? fixture.homePenalties : null;
+                matchObj.awayPenalties = fixture.awayPenalties !== undefined ? fixture.awayPenalties : null;
+            } else if (now < kickoffTime) {
+                // 2. 未来的比赛：强制为未开始，清空比分
                 matchObj.status = 'scheduled';
                 matchObj.homeScore = null;
                 matchObj.awayScore = null;
                 matchObj.homePenalties = null;
                 matchObj.awayPenalties = null;
             } else if (now >= kickoffTime && now < kickoffTime + matchDurationMs) {
-                // 2. 正在进行中的比赛：如果还没被标为 finished，就标记为进行中
+                // 3. 正在进行中的比赛，且远程还没有录入比分：如果本地还没标为 finished，就标记为 live，默认 0:0
                 if (matchObj.status !== 'finished') {
                     matchObj.status = 'live';
-                    // 如果还没有录入比分，默认为 0:0
                     if (matchObj.homeScore === null) matchObj.homeScore = 0;
                     if (matchObj.awayScore === null) matchObj.awayScore = 0;
                 }
             } else {
-                // 3. 已经结束的历史比赛：
-                // 只要远程 fixtures.json 已经标为 finished 且含有真实比分，而本地还没标为 finished，就强制进行比分覆盖同步。
-                // 这样能有效打破 LocalStorage 脏缓存的锁定，并在后续运行中正确载入真实完赛比分，同时保留用户手动的模拟成果。
-                const isRemoteFinished = fixture.homeScore !== null && fixture.homeScore !== undefined && (fixture.status === 'finished');
-                const isLocalNotFinished = matchObj.status !== 'finished';
-                const needsSync = !localData || matchObj.homeScore === null || (isLocalNotFinished && isRemoteFinished);
-                
-                if (needsSync) {
-                    if (fixture.homeScore !== undefined && fixture.homeScore !== null) {
-                        matchObj.homeScore = fixture.homeScore;
-                        matchObj.awayScore = fixture.awayScore;
-                        matchObj.status = fixture.status || 'finished';
-                        matchObj.homePenalties = fixture.homePenalties !== undefined ? fixture.homePenalties : null;
-                        matchObj.awayPenalties = fixture.awayPenalties !== undefined ? fixture.awayPenalties : null;
-                    } else if (initialScoreSnapshots[mNum]) {
+                // 4. 已经结束的历史比赛，且远程还没有录入比分：
+                if (matchObj.homeScore === null) {
+                    if (initialScoreSnapshots[mNum]) {
                         matchObj.homeScore = initialScoreSnapshots[mNum].homeScore;
                         matchObj.awayScore = initialScoreSnapshots[mNum].awayScore;
                         matchObj.status = initialScoreSnapshots[mNum].status;
@@ -368,7 +362,13 @@ async function reloadMatchesDataOnly() {
                 }
                 
                 // 如果后端脚本把比分写入了 fixtures.json 并且与本地当前值不同，进行更新
-                if (newHomeScore !== null && (localMatchObj.homeScore !== newHomeScore || localMatchObj.awayScore !== newAwayScore || localMatchObj.status !== newStatus)) {
+                if (newHomeScore !== null && (
+                    localMatchObj.homeScore !== newHomeScore || 
+                    localMatchObj.awayScore !== newAwayScore || 
+                    localMatchObj.status !== newStatus ||
+                    localMatchObj.homePenalties !== newHomePen ||
+                    localMatchObj.awayPenalties !== newAwayPen
+                )) {
                     localMatchObj.homeScore = newHomeScore;
                     localMatchObj.awayScore = newAwayScore;
                     localMatchObj.status = newStatus;
@@ -381,6 +381,7 @@ async function reloadMatchesDataOnly() {
         
         if (dataChanged) {
             console.log('⚡ 自动刷新：检测到 Actions 后台同步了新的真实比分，重新渲染中...');
+            saveMatchesToLocalStorage();
             renderAll();
             showToast('已同步最新比赛比分！', 'info');
         }
