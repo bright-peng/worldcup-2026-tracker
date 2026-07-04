@@ -1354,8 +1354,8 @@
       "hostCity": "philadelphia",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-74-vs-winner-match-77-2026-07-04",
       "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 90,
