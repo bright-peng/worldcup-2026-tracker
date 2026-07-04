@@ -1339,7 +1339,7 @@
       "homeScore": 3,
       "awayScore": 5,
       "status": "finished",
-      "homePenalties": 4,
+      "homePenalties": 2,
       "awayPenalties": 4
     },
     {
@@ -1360,11 +1360,14 @@
       "kickoffUtc": "2026-07-04T17:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 73",
-      "awayTeam": "Winner Match 75",
+      "homeTeam": "Canada",
+      "awayTeam": "Morocco",
       "stadium": "NRG Stadium",
       "hostCity": "houston",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-73-vs-winner-match-75-2026-07-04"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-73-vs-winner-match-75-2026-07-04",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 91,
