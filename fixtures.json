@@ -1366,7 +1366,7 @@
       "hostCity": "houston",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-73-vs-winner-match-75-2026-07-04",
       "homeScore": 0,
-      "awayScore": 0,
+      "awayScore": 1,
       "status": "live"
     },
     {
