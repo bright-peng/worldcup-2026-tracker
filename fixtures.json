@@ -1306,9 +1306,9 @@
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-j-winners-vs-group-h-runners-up-2026-07-03",
-      "homeScore": 1,
-      "awayScore": 1,
-      "status": "live"
+      "homeScore": 3,
+      "awayScore": 2,
+      "status": "finished"
     },
     {
       "matchNumber": 87,
