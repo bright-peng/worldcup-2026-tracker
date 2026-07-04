@@ -1320,7 +1320,10 @@
       "awayTeam": "Ghana",
       "stadium": "Arrowhead Stadium",
       "hostCity": "kansas-city",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-k-winners-vs-group-d-e-i-j-l-third-place-2026-07-03"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/group-k-winners-vs-group-d-e-i-j-l-third-place-2026-07-03",
+      "homeScore": 1,
+      "awayScore": 0,
+      "status": "finished"
     },
     {
       "matchNumber": 88,
