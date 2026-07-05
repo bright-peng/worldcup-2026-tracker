@@ -1383,9 +1383,9 @@
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-76-vs-winner-match-78-2026-07-05",
-      "homeScore": 0,
-      "awayScore": 0,
-      "status": "scheduled"
+      "homeScore": 1,
+      "awayScore": 2,
+      "status": "finished"
     },
     {
       "matchNumber": 92,
