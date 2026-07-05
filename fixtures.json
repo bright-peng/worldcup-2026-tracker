@@ -1378,11 +1378,14 @@
       "kickoffUtc": "2026-07-05T20:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 76",
-      "awayTeam": "Winner Match 78",
+      "homeTeam": "Brazil",
+      "awayTeam": "Norway",
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-76-vs-winner-match-78-2026-07-05"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-76-vs-winner-match-78-2026-07-05",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 92,
