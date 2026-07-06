@@ -1414,8 +1414,8 @@
       "hostCity": "dallas",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-83-vs-winner-match-84-2026-07-06",
       "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 94,
