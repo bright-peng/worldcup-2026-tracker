@@ -1393,11 +1393,14 @@
       "kickoffUtc": "2026-07-06T00:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 79",
-      "awayTeam": "Winner Match 80",
+      "homeTeam": "Mexico",
+      "awayTeam": "England",
       "stadium": "Estadio Azteca",
       "hostCity": "mexico-city",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-79-vs-winner-match-80-2026-07-05"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-79-vs-winner-match-80-2026-07-05",
+      "homeScore": 2,
+      "awayScore": 3,
+      "status": "finished"
     },
     {
       "matchNumber": 93,
@@ -1405,8 +1408,8 @@
       "kickoffUtc": "2026-07-06T19:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 83",
-      "awayTeam": "Winner Match 84",
+      "homeTeam": "Portugal",
+      "awayTeam": "Spain",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-83-vs-winner-match-84-2026-07-06"
@@ -1417,8 +1420,8 @@
       "kickoffUtc": "2026-07-07T00:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 81",
-      "awayTeam": "Winner Match 82",
+      "homeTeam": "United States",
+      "awayTeam": "Belgium",
       "stadium": "Lumen Field",
       "hostCity": "seattle",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-81-vs-winner-match-82-2026-07-06"
@@ -1429,8 +1432,8 @@
       "kickoffUtc": "2026-07-07T16:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 86",
-      "awayTeam": "Winner Match 88",
+      "homeTeam": "Argentina",
+      "awayTeam": "Egypt",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-86-vs-winner-match-88-2026-07-07"
@@ -1441,8 +1444,8 @@
       "kickoffUtc": "2026-07-07T20:00:00Z",
       "stage": "round-of-16",
       "group": null,
-      "homeTeam": "Winner Match 85",
-      "awayTeam": "Winner Match 87",
+      "homeTeam": "Switzerland",
+      "awayTeam": "Colombia",
       "stadium": "BC Place",
       "hostCity": "vancouver",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-85-vs-winner-match-87-2026-07-07"
@@ -1453,8 +1456,8 @@
       "kickoffUtc": "2026-07-09T20:00:00Z",
       "stage": "quarter-finals",
       "group": null,
-      "homeTeam": "Winner Match 89",
-      "awayTeam": "Winner Match 90",
+      "homeTeam": "France",
+      "awayTeam": "Morocco",
       "stadium": "Gillette Stadium",
       "hostCity": "boston",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-89-vs-winner-match-90-2026-07-09"
@@ -1477,8 +1480,8 @@
       "kickoffUtc": "2026-07-11T21:00:00Z",
       "stage": "quarter-finals",
       "group": null,
-      "homeTeam": "Winner Match 91",
-      "awayTeam": "Winner Match 92",
+      "homeTeam": "Norway",
+      "awayTeam": "England",
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-91-vs-winner-match-92-2026-07-11"

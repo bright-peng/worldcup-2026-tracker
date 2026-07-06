@@ -26,6 +26,10 @@ def normalize_team_name(name):
     trimmed = name.strip()
     return api_team_to_local.get(trimmed, trimmed)
 
+def is_placeholder(name):
+    """判断队名是否仍然是占位符（如 'Group A winners'，'Winner Match 83'）"""
+    return not name or 'winners' in name or 'runners-up' in name or 'third place' in name or 'Winner' in name or 'Loser' in name
+
 # 通用 HTTP 请求辅助函数
 def fetch_url(url, headers=None):
     if headers is None:
@@ -807,6 +811,27 @@ def main():
     # 动态在内存中演算晋级对阵以解析淘汰赛的待定占位符（如 Group A runners-up）
     resolved_matches = calculate_standings_and_resolve_teams(local_data['fixtures'])
 
+    # --------------------------------------------------------------------------
+    # 队名传导同步：如果内存中已算出淘汰赛的真实队伍，无条件写入 fixtures.json 中
+    # 这确保了在比赛临近或开球前，数据文件中的队名已经被替换成真实的，防止抓取时匹配失败
+    # --------------------------------------------------------------------------
+    propagation_count = 0
+    for match in local_data['fixtures']:
+        m_num = match['matchNumber']
+        if m_num in resolved_matches:
+            resolved_m = resolved_matches[m_num]
+            if is_placeholder(match.get('homeTeam', '')) and not is_placeholder(resolved_m.get('homeTeam', '')):
+                match['homeTeam'] = resolved_m['homeTeam']
+                propagation_count += 1
+                print(f"👉 [对阵传导] Match {m_num} 主队更新为: {resolved_m['homeTeam']}")
+            if is_placeholder(match.get('awayTeam', '')) and not is_placeholder(resolved_m.get('awayTeam', '')):
+                match['awayTeam'] = resolved_m['awayTeam']
+                propagation_count += 1
+                print(f"👉 [对阵传导] Match {m_num} 客队更新为: {resolved_m['awayTeam']}")
+    
+    if propagation_count > 0:
+        print(f"✓ 对阵传导同步完成，共更新了 {propagation_count} 处队名占位符。")
+
     now_utc = datetime.now(timezone.utc)
     print(f"⏰ 当前 UTC 时间: {now_utc.strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -952,11 +977,6 @@ def main():
     # 增量滑动窗口抓取控制与多源投票决策
     # --------------------------------------------------------------------------
     updated_count = 0
-    
-    def is_placeholder(name):
-        """判断队名是否仍然是占位符（如 'Group A winners'）"""
-        return not name or 'winners' in name or 'runners-up' in name or 'third place' in name or 'Winner' in name or 'Loser' in name
-
     # 遍历本地所有赛程，进行增量窗口判定
     for match in local_data['fixtures']:
             
