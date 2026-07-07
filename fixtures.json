@@ -1427,7 +1427,10 @@
       "awayTeam": "Belgium",
       "stadium": "Lumen Field",
       "hostCity": "seattle",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-81-vs-winner-match-82-2026-07-06"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-81-vs-winner-match-82-2026-07-06",
+      "homeScore": 1,
+      "awayScore": 2,
+      "status": "live"
     },
     {
       "matchNumber": 95,
