@@ -1457,7 +1457,10 @@
       "awayTeam": "Colombia",
       "stadium": "BC Place",
       "hostCity": "vancouver",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-85-vs-winner-match-87-2026-07-07"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-85-vs-winner-match-87-2026-07-07",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 97,
