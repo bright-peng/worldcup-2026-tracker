@@ -1458,9 +1458,11 @@
       "stadium": "BC Place",
       "hostCity": "vancouver",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-85-vs-winner-match-87-2026-07-07",
-      "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "homeScore": 4,
+      "awayScore": 3,
+      "status": "finished",
+      "homePenalties": 3,
+      "awayPenalties": 3
     },
     {
       "matchNumber": 97,
@@ -1505,7 +1507,7 @@
       "stage": "quarter-finals",
       "group": null,
       "homeTeam": "Argentina",
-      "awayTeam": "Winner Match 96",
+      "awayTeam": "Switzerland",
       "stadium": "Arrowhead Stadium",
       "hostCity": "kansas-city",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-95-vs-winner-match-96-2026-07-11"
