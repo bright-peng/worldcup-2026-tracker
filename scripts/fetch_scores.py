@@ -30,6 +30,27 @@ def is_placeholder(name):
     """判断队名是否仍然是占位符（如 'Group A winners'，'Winner Match 83'）"""
     return not name or 'winners' in name or 'runners-up' in name or 'third place' in name or 'Winner' in name or 'Loser' in name
 
+def propagate_knockouts(local_data):
+    """根据目前的比赛比分，演算并将淘汰赛的真实队名更新到 fixtures 中"""
+    resolved_matches = calculate_standings_and_resolve_teams(local_data['fixtures'])
+    propagation_count = 0
+    for match in local_data['fixtures']:
+        m_num = match['matchNumber']
+        if m_num in resolved_matches:
+            resolved_m = resolved_matches[m_num]
+            if is_placeholder(match.get('homeTeam', '')) and not is_placeholder(resolved_m.get('homeTeam', '')):
+                match['homeTeam'] = resolved_m['homeTeam']
+                propagation_count += 1
+                print(f"👉 [对阵传导] Match {m_num} 主队更新为: {resolved_m['homeTeam']}")
+            if is_placeholder(match.get('awayTeam', '')) and not is_placeholder(resolved_m.get('awayTeam', '')):
+                match['awayTeam'] = resolved_m['awayTeam']
+                propagation_count += 1
+                print(f"👉 [对阵传导] Match {m_num} 客队更新为: {resolved_m['awayTeam']}")
+    
+    if propagation_count > 0:
+        print(f"✓ 对阵传导同步完成，共更新了 {propagation_count} 处队名占位符。")
+    return propagation_count
+
 # 通用 HTTP 请求辅助函数
 def fetch_url(url, headers=None):
     if headers is None:
@@ -808,29 +829,13 @@ def main():
         print(f"❌ 读取 fixtures.json 失败: {e}")
         sys.exit(1)
 
+    # --------------------------------------------------------------------------
+    # 队名传导同步 (第一遍)：如果内存中已算出淘汰赛的真实队伍，无条件写入 fixtures.json 中
+    # --------------------------------------------------------------------------
+    propagate_knockouts(local_data)
+
     # 动态在内存中演算晋级对阵以解析淘汰赛的待定占位符（如 Group A runners-up）
     resolved_matches = calculate_standings_and_resolve_teams(local_data['fixtures'])
-
-    # --------------------------------------------------------------------------
-    # 队名传导同步：如果内存中已算出淘汰赛的真实队伍，无条件写入 fixtures.json 中
-    # 这确保了在比赛临近或开球前，数据文件中的队名已经被替换成真实的，防止抓取时匹配失败
-    # --------------------------------------------------------------------------
-    propagation_count = 0
-    for match in local_data['fixtures']:
-        m_num = match['matchNumber']
-        if m_num in resolved_matches:
-            resolved_m = resolved_matches[m_num]
-            if is_placeholder(match.get('homeTeam', '')) and not is_placeholder(resolved_m.get('homeTeam', '')):
-                match['homeTeam'] = resolved_m['homeTeam']
-                propagation_count += 1
-                print(f"👉 [对阵传导] Match {m_num} 主队更新为: {resolved_m['homeTeam']}")
-            if is_placeholder(match.get('awayTeam', '')) and not is_placeholder(resolved_m.get('awayTeam', '')):
-                match['awayTeam'] = resolved_m['awayTeam']
-                propagation_count += 1
-                print(f"👉 [对阵传导] Match {m_num} 客队更新为: {resolved_m['awayTeam']}")
-    
-    if propagation_count > 0:
-        print(f"✓ 对阵传导同步完成，共更新了 {propagation_count} 处队名占位符。")
 
     now_utc = datetime.now(timezone.utc)
     print(f"⏰ 当前 UTC 时间: {now_utc.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -862,7 +867,7 @@ def main():
             break
 
     # 如果检测到没有处于正在踢或临近开球的比赛，关闭收费/限流数据源的调用，只使用免 Key 数据源
-    if not has_active_match:
+    if not has_active_match and os.environ.get('FORCE_SYNC') != '1':
         print("⏰ [方案 B 保护中] 当前无正在进行中或临近开球的比赛，自动跳过受限/收费数据源 (Football-Data & API-Football) 以节省额度。")
         token = None
         rapid_key = None
@@ -1113,6 +1118,14 @@ def main():
 
         print(f"⚡ [窗口更新] Match {m_num} ({local_h} vs {local_a}): 真实比分更新为 {consensus_home}:{consensus_away}，状态: {consensus_status} (多源投票: {count}/{len(score_tuples)}票)")
         updated_count += 1
+
+    # --------------------------------------------------------------------------
+    # 队名传导同步 (第二遍)：在比分抓取写入完成后，再次触发传导
+    # 这样刚刚产生的淘汰赛胜者（如西班牙、比利时）能直接填入下一轮的对阵（如 Match 98 1/4 决赛）中并固化
+    # --------------------------------------------------------------------------
+    if updated_count > 0:
+        print("⚡ [增量比分变动] 触发第二遍对阵传导同步...")
+        propagate_knockouts(local_data)
 
     # 写回 fixtures.json
     try:

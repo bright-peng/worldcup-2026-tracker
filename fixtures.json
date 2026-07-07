@@ -1429,8 +1429,8 @@
       "hostCity": "seattle",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-81-vs-winner-match-82-2026-07-06",
       "homeScore": 1,
-      "awayScore": 2,
-      "status": "live"
+      "awayScore": 4,
+      "status": "finished"
     },
     {
       "matchNumber": 95,
@@ -1475,7 +1475,7 @@
       "stage": "quarter-finals",
       "group": null,
       "homeTeam": "Spain",
-      "awayTeam": "Winner Match 94",
+      "awayTeam": "Belgium",
       "stadium": "SoFi Stadium",
       "hostCity": "los-angeles",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-93-vs-winner-match-94-2026-07-10"
