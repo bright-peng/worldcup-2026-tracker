@@ -1442,7 +1442,10 @@
       "awayTeam": "Egypt",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-86-vs-winner-match-88-2026-07-07"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-86-vs-winner-match-88-2026-07-07",
+      "homeScore": 0,
+      "awayScore": 1,
+      "status": "scheduled"
     },
     {
       "matchNumber": 96,
