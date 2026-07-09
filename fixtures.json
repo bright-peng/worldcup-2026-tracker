@@ -1477,7 +1477,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-89-vs-winner-match-90-2026-07-09",
       "homeScore": 2,
       "awayScore": 0,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 98,
@@ -1521,7 +1521,7 @@
       "kickoffUtc": "2026-07-14T19:00:00Z",
       "stage": "semi-finals",
       "group": null,
-      "homeTeam": "Winner Match 97",
+      "homeTeam": "France",
       "awayTeam": "Winner Match 98",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
