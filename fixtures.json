@@ -1492,7 +1492,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-93-vs-winner-match-94-2026-07-10",
       "homeScore": 2,
       "awayScore": 1,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 99,
@@ -1525,7 +1525,7 @@
       "stage": "semi-finals",
       "group": null,
       "homeTeam": "France",
-      "awayTeam": "Winner Match 98",
+      "awayTeam": "Spain",
       "stadium": "AT&T Stadium",
       "hostCity": "dallas",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-97-vs-winner-match-98-2026-07-14"
