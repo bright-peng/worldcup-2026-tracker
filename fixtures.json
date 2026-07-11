@@ -1505,8 +1505,8 @@
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-91-vs-winner-match-92-2026-07-11",
-      "homeScore": 2,
-      "awayScore": 1,
+      "homeScore": 1,
+      "awayScore": 2,
       "status": "live"
     },
     {
