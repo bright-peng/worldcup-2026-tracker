@@ -1507,7 +1507,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-91-vs-winner-match-92-2026-07-11",
       "homeScore": 1,
       "awayScore": 2,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 100,
@@ -1519,7 +1519,10 @@
       "awayTeam": "Switzerland",
       "stadium": "Arrowhead Stadium",
       "hostCity": "kansas-city",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-95-vs-winner-match-96-2026-07-11"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-95-vs-winner-match-96-2026-07-11",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 101,
@@ -1539,7 +1542,7 @@
       "kickoffUtc": "2026-07-15T19:00:00Z",
       "stage": "semi-finals",
       "group": null,
-      "homeTeam": "Winner Match 99",
+      "homeTeam": "England",
       "awayTeam": "Winner Match 100",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
