@@ -1520,9 +1520,9 @@
       "stadium": "Arrowhead Stadium",
       "hostCity": "kansas-city",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-95-vs-winner-match-96-2026-07-11",
-      "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "homeScore": 3,
+      "awayScore": 1,
+      "status": "finished"
     },
     {
       "matchNumber": 101,
@@ -1543,7 +1543,7 @@
       "stage": "semi-finals",
       "group": null,
       "homeTeam": "England",
-      "awayTeam": "Winner Match 100",
+      "awayTeam": "Argentina",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-99-vs-winner-match-100-2026-07-15"
