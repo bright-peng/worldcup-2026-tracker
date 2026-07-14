@@ -1537,7 +1537,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-97-vs-winner-match-98-2026-07-14",
       "homeScore": 0,
       "awayScore": 2,
-      "status": "live"
+      "status": "finished"
     },
     {
       "matchNumber": 102,
@@ -1557,7 +1557,7 @@
       "kickoffUtc": "2026-07-18T21:00:00Z",
       "stage": "third-place",
       "group": null,
-      "homeTeam": "Loser Match 101",
+      "homeTeam": "France",
       "awayTeam": "Loser Match 102",
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
@@ -1569,7 +1569,7 @@
       "kickoffUtc": "2026-07-19T19:00:00Z",
       "stage": "final",
       "group": null,
-      "homeTeam": "Winner Match 101",
+      "homeTeam": "Spain",
       "awayTeam": "Winner Match 102",
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
