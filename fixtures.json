@@ -1549,7 +1549,10 @@
       "awayTeam": "Argentina",
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
-      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-99-vs-winner-match-100-2026-07-15"
+      "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-99-vs-winner-match-100-2026-07-15",
+      "homeScore": 0,
+      "awayScore": 0,
+      "status": "live"
     },
     {
       "matchNumber": 103,
