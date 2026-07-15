@@ -1550,9 +1550,9 @@
       "stadium": "Mercedes-Benz Stadium",
       "hostCity": "atlanta",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-99-vs-winner-match-100-2026-07-15",
-      "homeScore": 0,
-      "awayScore": 0,
-      "status": "live"
+      "homeScore": 1,
+      "awayScore": 2,
+      "status": "finished"
     },
     {
       "matchNumber": 103,
@@ -1561,7 +1561,7 @@
       "stage": "third-place",
       "group": null,
       "homeTeam": "France",
-      "awayTeam": "Loser Match 102",
+      "awayTeam": "England",
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/loser-match-101-vs-loser-match-102-2026-07-18"
@@ -1573,7 +1573,7 @@
       "stage": "final",
       "group": null,
       "homeTeam": "Spain",
-      "awayTeam": "Winner Match 102",
+      "awayTeam": "Argentina",
       "stadium": "MetLife Stadium",
       "hostCity": "new-york",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-101-vs-winner-match-102-2026-07-19"
