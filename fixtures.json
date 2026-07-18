@@ -1565,9 +1565,9 @@
       "stadium": "Hard Rock Stadium",
       "hostCity": "miami",
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/loser-match-101-vs-loser-match-102-2026-07-18",
-      "homeScore": 2,
-      "awayScore": 4,
-      "status": "live"
+      "homeScore": 4,
+      "awayScore": 6,
+      "status": "finished"
     },
     {
       "matchNumber": 104,
