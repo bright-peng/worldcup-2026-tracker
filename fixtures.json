@@ -1582,7 +1582,7 @@
       "matchUrl": "https://www.thestatsapi.com/world-cup/matches/winner-match-101-vs-winner-match-102-2026-07-19",
       "homeScore": 0,
       "awayScore": 0,
-      "status": "scheduled"
+      "status": "live"
     }
   ]
 }
